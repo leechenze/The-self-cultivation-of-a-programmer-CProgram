@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9B172B412A88E10B002A74BA /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9B172B402A88E10B002A74BA /* main.cpp */; };
+		9B172B4E2A8928EC002A74BA /* tools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9B172B4C2A8928EC002A74BA /* tools.cpp */; };
+		9B172B522A89292D002A74BA /* funcs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9B172B502A89292D002A74BA /* funcs.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +27,10 @@
 /* Begin PBXFileReference section */
 		9B172B3D2A88E10B002A74BA /* 005fundamentalsOfFunc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 005fundamentalsOfFunc; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B172B402A88E10B002A74BA /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		9B172B4C2A8928EC002A74BA /* tools.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = tools.cpp; sourceTree = "<group>"; };
+		9B172B502A89292D002A74BA /* funcs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = funcs.cpp; sourceTree = "<group>"; };
+		9B172B542A8930B1002A74BA /* tools.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = tools.hpp; sourceTree = "<group>"; };
+		9B172B552A8930C9002A74BA /* funcs.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = funcs.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,9 +63,29 @@
 		9B172B3F2A88E10B002A74BA /* 005fundamentalsOfFunc */ = {
 			isa = PBXGroup;
 			children = (
+				9B172B4F2A89290D002A74BA /* moreFunc */,
+				9B172B4B2A8928B5002A74BA /* tools */,
 				9B172B402A88E10B002A74BA /* main.cpp */,
 			);
 			path = 005fundamentalsOfFunc;
+			sourceTree = "<group>";
+		};
+		9B172B4B2A8928B5002A74BA /* tools */ = {
+			isa = PBXGroup;
+			children = (
+				9B172B4C2A8928EC002A74BA /* tools.cpp */,
+				9B172B542A8930B1002A74BA /* tools.hpp */,
+			);
+			path = tools;
+			sourceTree = "<group>";
+		};
+		9B172B4F2A89290D002A74BA /* moreFunc */ = {
+			isa = PBXGroup;
+			children = (
+				9B172B502A89292D002A74BA /* funcs.cpp */,
+				9B172B552A8930C9002A74BA /* funcs.hpp */,
+			);
+			path = moreFunc;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -120,6 +146,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				9B172B412A88E10B002A74BA /* main.cpp in Sources */,
+				9B172B4E2A8928EC002A74BA /* tools.cpp in Sources */,
+				9B172B522A89292D002A74BA /* funcs.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,6 +269,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9CMGT66357;
 				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -251,6 +280,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9CMGT66357;
 				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
