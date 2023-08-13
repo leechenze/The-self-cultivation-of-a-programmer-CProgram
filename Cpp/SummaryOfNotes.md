@@ -170,7 +170,35 @@
 
 叁.条件分支语句(003conditionStatement)
     
+    经典 if else 语句:
+        注意事项:
+            if和else语句如果只是执行一行语句,那么可以不写花括号,如果是多行语句就不需要写花括号.
+    
+    三目运算:
+        c = (a > b) ? a : b
+        
+    switch语句:
+        注意每个case条件中不要漏掉 break, 如果使用 return 语句, 后面必须跟个值一般return 0即可.
+    
+
+
+
+
+
+
+
+
+
+
+
+肆.循环语句(004circulateStatement)
+
     ... TODO ...
+    
+
+
+
+
 
 
 
