@@ -193,7 +193,64 @@
 
 肆.循环语句(004circulateStatement)
 
+    while:
+        while(express){
+            statement;
+        }
+    
+    循环的跳转:
+        break
+            跳出(终止)当前循环语句
+        continue
+            回到当前循环语句的首部
+    for:
+        for(int i = 0; i < 10; i++) {
+            cout << "当前的值是: " << i << endl;
+        }
+    嵌套循环:
+        99乘法表实现.
+    do while:
+        int a = 10;
+        do{
+            cout << a++ << endl;
+        }while(a < 20);
+        和while的区别: 无论条件是否成立都会首先执行一次.
+    goto:
+        goto语句也被称为无条件转移语句.
+        语法:
+            cout << "第1个程序员的编号" << endl;
+            goto bbb;
+            cout << "第2个程序员的编号" << endl;
+            cout << "第3个程序员的编号" << endl;
+            cout << "第4个程序员的编号" << endl;
+            bbb: cout << "第5个程序员的编号" << endl;
+        输出结果:
+            第1个程序员的编号
+            第5个程序员的编号
+        建议:
+            在实际开发中,goto语句很容易造成程序流程的混乱,对维护工作带来很大压力,所以几乎看到goto语句的应用,也不建议使用.
+        
+
+
+
+
+
+
+
+
+
+
+伍.函数基础(005fundamentalsOfFunc)
+
     ... TODO ...
+
+
+
+
+
+
+
+
     
 
 
@@ -203,6 +260,7 @@
 
 
 
+    
 
 
 
@@ -211,8 +269,7 @@
 
 
 
-
-
+    
 
 
 
