@@ -1,0 +1,10 @@
+# ninja log v5
+0	219	1692095073503978818	CMakeFiles/005fundamentalsOfFunc.dir/tools/tools.cpp.o	6d72615921624d41
+0	227	1692095073513309873	CMakeFiles/005fundamentalsOfFunc.dir/main.cpp.o	1f50fc7cd873ecf9
+0	229	1692095073515150767	CMakeFiles/005fundamentalsOfFunc.dir/moreFunc/funcs.cpp.o	e8130d2fc0a69f30
+4	217	1692095850099455997	CMakeFiles/005fundamentalsOfFunc.dir/tools/tools.cpp.o	6d72615921624d41
+4	226	1692095850108701969	CMakeFiles/005fundamentalsOfFunc.dir/main.cpp.o	1f50fc7cd873ecf9
+3	228	1692095850110788745	CMakeFiles/005fundamentalsOfFunc.dir/moreFunc/funcs.cpp.o	e8130d2fc0a69f30
+3	223	1692096085105356618	CMakeFiles/005fundamentalsOfFunc.dir/tools/tools.cpp.o	6d72615921624d41
+3	233	1692096085115192211	CMakeFiles/005fundamentalsOfFunc.dir/main.cpp.o	1f50fc7cd873ecf9
+3	234	1692096085116889698	CMakeFiles/005fundamentalsOfFunc.dir/moreFunc/funcs.cpp.o	e8130d2fc0a69f30

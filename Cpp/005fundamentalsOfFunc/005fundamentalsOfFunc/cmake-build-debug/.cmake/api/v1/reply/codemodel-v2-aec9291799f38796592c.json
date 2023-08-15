@@ -1,0 +1,60 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.23"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "005fundamentalsOfFunc",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "005fundamentalsOfFunc::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-005fundamentalsOfFunc-Debug-b6d498f94b774a46cf76.json",
+					"name" : "005fundamentalsOfFunc",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/lee/MySkills/The-self-cultivation-of-a-programmer-CProgram/Cpp/005fundamentalsOfFunc/005fundamentalsOfFunc/cmake-build-debug",
+		"source" : "/Users/lee/MySkills/The-self-cultivation-of-a-programmer-CProgram/Cpp/005fundamentalsOfFunc/005fundamentalsOfFunc"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}
