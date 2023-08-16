@@ -7,6 +7,8 @@
 
 #include "funcs.hpp"
 
+std::string msg = "全局变量message";
+
 // 函数定义
 void func1() {
     string localMsg = "func1局部变量message";
@@ -24,7 +26,7 @@ void func2() {
 }
 
 void func3() {
-    string msg = "func1局部变量message";
+    string msg = "func3局部变量message";
     cout << "msg = " << msg << endl;
     cout << "::msg = " << ::msg << endl;
 }

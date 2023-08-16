@@ -12,7 +12,7 @@
 
 using namespace std;
 
-string msg = "全局变量message";
+extern string msg;
 
 // 函数声明;
 void func1();

@@ -289,7 +289,12 @@
         编译:
             mac是集成开发环境,不需要写入编译指令.
             linux系统下,把全部的源文件,一起编译,如: gcc -o main main.cpp tools.cpp funcs.cpp
-        
+    递归函数:
+        int recursion(int x){
+            if (x == 0) return 0;
+            return x + recursion(x-1);
+        };
+
         
 
 
@@ -298,7 +303,9 @@
 
 
     
-
+陆.C++数据类型
+    
+    ... TODO ...
 
 
 
