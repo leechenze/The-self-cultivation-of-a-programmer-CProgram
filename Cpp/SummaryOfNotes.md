@@ -870,15 +870,72 @@
                 把全部的元素置为0:
             str[0]=0;
                 C约定了用0表示字符串的结束,那么第一个元素置为0,那么后面的任何值都没有意义了(不规范,有隐患,不推荐)
-        字符串复制或赋值:
-            ... TODO ...
-            
-        
-        
-        
-                
-        
-        
+        字符串复制或赋值(strcpy)
+            cpp字符串可以字节用等号赋值,但是c字符串不可以,要用strcpy函数实现赋值.
+            char *strcpy(char* dest, const char* src);
+            参数: 目标字符串,源字符串
+            功 能: 将参数src字符串拷贝至参数dest所指的地址。
+            返回值: 返回参数dest的字符串起始地址。
+            复制完字符串后，会在dest后追加0。
+            如果参数dest所指的内存空间不够大，会导致数组的越界。
+        字符串复制或赋值(strncpy)
+            char * strncpy(char* dest,const char* src, const size_t n);
+            功能：把src前n个字符的内容复制到dest中。
+            返回值：dest字符串起始地址。
+            如果src字符串长度小于n，则拷贝完字符串后，在dest后追加0，直到n个。
+            如果src的长度大于等于n，就截取src的前n个字符，不会在dest后追加0。
+            如果参数dest所指的内存空间不够大，会导致数组的越界。
+            strncpy的坑点:
+                strncpy(str8, "hello", 3);
+                hello是五个字符,但是只有3个值,windows平台下会将其他值赋为垃圾值.
+                解决这个问题就是在strncpy之前,用memset将字符数组清空:memset(str8, 0, sizeof(str8));
+        获取字符串的长度(strlen)
+            size_t  strlen( const char*  str);
+            功能：计算字符串的有效长度，不包含0。
+            返回值：返回字符串的字符数。
+            strlen()函数计算的是字符串的实际长度，遇到0结束。
+        字符串拼接(strcat)
+            char *strcat(char* dest,const char* src);
+            功能：将src字符串拼接到dest所指的字符串尾部。
+            返回值：返回dest字符串起始地址。
+            dest最后原有的结尾字符0会被覆盖掉，并在连接后的字符串的尾部再增加一个0。
+            如果参数dest所指的内存空间不够大，会导致数组的越界。
+        字符串拼接(strncat)
+            char *strncat (char* dest,const char* src, const size_t n);
+            功能：将src字符串的前n个字符拼接到dest所指的字符串尾部。
+            返回值：返回dest字符串的起始地址。
+            如果n大于等于字符串src的长度，那么将src全部追加到dest的尾部，如果n小于字符串src的长度，只追加src的前n个字符。
+            strncat会将dest字符串最后的0覆盖掉，字符追加完成后，再追加0。
+            如果参数dest所指的内存空间不够大，会导致数组的越界。
+        字符串比较strcmp()和strncmp()
+            int strcmp(const char *str1, const char *str2 );
+            功能：比较str1和str2的大小。
+            返回值：相等返回0，str1大于str2返回1，str1小于str2返回-1；
+            int strncmp(const char *str1,const char *str2 ,const size_t n);
+            功能：比较str1和str2前n个字符的大小。
+            返回值：相等返回0，str1大于str2返回1，str1小于str2返回-1；
+            两个字符串比较的方法是比较字符的ASCII码的大小，从两个字符串的第一个字符开始，如果分不出大小，就比较第二个字符，如果全部的字符都分不出大小，就返回0，表示两个字符串相等。
+            在实际开发中，程序员一般只关心字符串是否相等，不关心哪个字符串更大或更小。
+        查找字符strchr()和strrchr()
+            const char *strchr(const char *s, int c);
+            返回在字符串s中第一次出现c的位置，如果找不到，返回0。
+            const char *strrchr(const char *s, int c);
+            返回在字符串s中最后一次出现c的位置，如果找不到，返回0。
+        查找字符串strstr()
+            char *strstr(const char* str,const char* substr);
+            功能：检索子串在字符串中首次出现的位置。
+            返回值：返回字符串str中第一次出现子串substr的地址；如果没有检索到子串，则返回0。
+        用于string的表达式
+            可以把C风格的字符串用于包含了string类型的赋值拼接等表达式中。
+        注意事项
+            a）字符串的结尾标志是0，按照约定，在处理字符串的时候，会从起始位置开始搜索0，一直找下去，找到为止（不会判断数组是否越界）。
+            b）结尾标志0后面的都是垃圾内容。
+            c）字符串在每次使用前都要初始化，减少入坑的可能，是每次，不是第一次。
+            d）不要在子函数中对字符指针用sizeof运算，所以，不能在子函数中对传入的字符串进行初始化，除非字符串的长度也作为参数传入到了子函数中。
+            e）windoes平台中，默认C标准的字符串操作函数是不安全的，如果要使用C标准的字符串操作函数，要在源代码文件的最上面加 #define _CRT_SECURE_NO_WARNINGS，还可以通过 strcpy_s，strcat_s ... 等函数处理字符串函数操作的安全性问题,一般在linux平台下是不会有这些问题的,所以了解下即可.
+    
+    二维数组
+        ... TODO ...
         
         
         

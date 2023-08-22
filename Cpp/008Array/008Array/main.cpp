@@ -5,6 +5,8 @@
 //  Created by Lee ChenZe on 8/20/23.
 //
 
+// windows平台下使用strcpy函数报错添加下面这一行
+//#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 using namespace std;
 
@@ -160,7 +162,31 @@ int main(int argc, const char * argv[]) {
     cout << "str7[3] = " << (int)str7[3] << endl;
     cout << "str7[4] = " << (int)str7[4] << endl;
     // 字符串复制或赋值
+    char str8[11];
+    // strcpy(str8, "hello");
+    strncpy(str8, "hello", 3);
+    cout << "str8 = " << str8 << endl;
+    cout << "str8 = " << strlen(str8) << endl;
+    // 字符串拼接
+    char str9[] = "hello,";
+    char str10[] = "world!";
+    cout << "strcat(str9, str10) = " << strcat(str9, str10) << endl;
+    // 字符串比较strcmp()和strncmp()
+    // 查找字符strchr()和strrchr()
+    // 查找字符串strstr()
+    // 用于string的表达式
+    
+    
+    cout << endl;
+    /** =========二维数组========= */
     // TODO
+    
+    
+    
+    
+    
+    
+    
     
     
     
