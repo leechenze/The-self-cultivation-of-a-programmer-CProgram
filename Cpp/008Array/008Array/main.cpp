@@ -179,21 +179,49 @@ int main(int argc, const char * argv[]) {
     
     cout << endl;
     /** =========二维数组========= */
+    int arr13[2][3];
+    arr13[0][0] = 00;
+    arr13[0][1] = 01;
+    arr13[0][2] = 02;
+    arr13[1][0] = 10;
+    arr13[1][1] = 11;
+    arr13[1][2] = 12;
+    cout << "arr13[0][0] = " << arr13[0][0] << endl;
+    cout << "arr13[0][1] = " << arr13[0][1] << endl;
+    cout << "arr13[0][2] = " << arr13[0][2] << endl;
+    cout << "arr13[1][0] = " << arr13[1][0] << endl;
+    cout << "arr13[1][1] = " << arr13[1][1] << endl;
+    cout << "arr13[1][2] = " << arr13[1][2] << endl;
+    cout << endl;
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 3; j++) {
+            cout << "arr13[" << i << "][" << j << "] = " << arr13[i][j] << endl;
+        }
+    }
+    // 二维数组的数组名也被解释为起始地址,和一维数组是一样的,用一维数组的方法可以正常显示而为数组的内容
+    int* p = (int*)arr13;
+    for (int i = 0; i < 6; i++) {
+        cout << "p[" << i << "] = " << p[i] << endl;
+    }
+    // 二维数组初始化
+    int arr14[2][3] = {{00,01,02},{10,11,12}};
+    int arr15[2][3] = {0,1,2,10,11,12};
+    int arr16[][3] = {0,1,2,10,11,12};
+    for (int i = 0; i < 6; i++) {
+        cout << "arr14[" << i << "] = " << *((int*)arr14 + i) << endl;
+        cout << "arr15[" << i << "] = " << *((int*)arr15 + i) << endl;
+        cout << "arr16[" << i << "] = " << *((int*)arr16 + i) << endl;
+    }
+    // 清空二维数组
+    memset(arr14, 0, sizeof(arr14));
+    for (int i = 0; i < 6; i++) {
+        cout << "arr14[" << i << "] = " << *((int*)arr14 + i) << endl;
+    }
+    
+    
+    cout << endl;
+    /** =========二维数组用于函数的参数========= */
     // TODO
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     
