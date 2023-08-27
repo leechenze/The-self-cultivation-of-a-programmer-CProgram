@@ -14,6 +14,11 @@ void func(int arr[], int len);
 int compasc(const void* p1, const void* p2);
 int compdesc(const void* p1, const void* p2);
 int search(int arr[], int len, int key);
+// func1的两种声明方法
+// void func1(int p[][3],int len);
+// or
+void func1(int (*p)[3],int len);
+void func2(int (*p)[2][4]);
 
 int main(int argc, const char * argv[]) {
     cout << endl;
@@ -221,21 +226,65 @@ int main(int argc, const char * argv[]) {
     
     cout << endl;
     /** =========二维数组用于函数的参数========= */
-    // TODO
-    
-    
-    
-    
-    
+    int a[10];
+    // 数组a的第一个元素地址可以存放到普通指针 *p3 上
+    int *p3 = a;
+    // 而数组a的地址需要存放到数组指针(行指针) (*p4)[10] 上
+    int (*p4)[10] = &a;
+    // 把二维数组传递给函数
+    int arr17[2][3] = { {11,12,13},{21,22,23} };
+    func1(arr17,2);
     
     
     cout << endl;
-    cout << endl;
-    cout << endl;
+    /** =========多维数组========= */
+    // 声明三维数组
+    int arr18[4][2][4];
+    // 清空数组(处理window平台下的垃圾值)
+    memset(arr18,0,sizeof(arr18));
+    // 遍历三维数组并赋值
+    int icount = 0;
+    for (int a = 0; a < 4; a++) {
+        for (int b = 0; b < 2; b++) {
+            for (int c = 0; c < 4; c++) {
+                arr18[a][b][c] = icount++;
+            }
+        }
+    }
+    // 遍历三维数组并打印
+    for (int a = 0; a < 4; a++) {
+        for (int b = 0; b < 2; b++) {
+            for (int c = 0; c < 4; c++) {
+                cout << arr18[a][b][c] << "\t";
+            }
+            cout << endl;
+        }
+        cout << endl << endl;
+    }
+    // 三维数组作为参数传递func2函数进行循环赋值
+    cout << "====================" << endl << endl;
+    int arr19[4][2][4];
+    func2(arr19);
+    // 循环打印
+    for (int a = 0; a < 4; a++) {
+        for (int b = 0; b < 2; b++) {
+            for (int c = 0; c < 4; c++) {
+                cout << arr18[a][b][c] << "\t";
+            }
+            cout << endl;
+        }
+        cout << endl << endl;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    cout << endl << endl << endl;
 }
-
-
-
 
 void func(int arr[], int len){
     for(int i = 0; i < len; i++) {
@@ -270,4 +319,22 @@ int search(int arr[], int len, int key){
     }
     // 查找失败。
     return -1;
+}
+void func1(int p[][3],int len){
+    for(int i = 0; i < len; i++) {
+        for(int j = 0; j < 3; j++) {
+            cout << "p[" << i << "][" << j << "]" << p[i][j] << "   ";
+        }
+        cout << endl;
+    }
+}
+void func2(int (*arr)[2][4]){
+    int icount = 0;
+    for (int a = 0; a < 4; a++) {
+        for (int b = 0; b < 2; b++) {
+            for (int c = 0; c < 4; c++) {
+                arr[a][b][c] = icount++;
+            }
+        }
+    }
 }
