@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9B18180B2A9B3CCA002F0A9D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9B18180A2A9B3CCA002F0A9D /* main.cpp */; };
+		9B18180B2A9B3CCA002F0A9D /* basic-concepts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9B18180A2A9B3CCA002F0A9D /* basic-concepts.cpp */; };
+		9B1818152A9CE5AA002F0A9D /* structure-pointer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9B1818142A9CE5AA002F0A9D /* structure-pointer.cpp */; };
+		9B1818172A9CE67E002F0A9D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9B1818162A9CE67E002F0A9D /* main.cpp */; };
+		9B1818192A9CF483002F0A9D /* structure-array.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9B1818182A9CF483002F0A9D /* structure-array.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,7 +27,10 @@
 
 /* Begin PBXFileReference section */
 		9B1818072A9B3CCA002F0A9D /* 009StructureAndEnumeration */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 009StructureAndEnumeration; sourceTree = BUILT_PRODUCTS_DIR; };
-		9B18180A2A9B3CCA002F0A9D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		9B18180A2A9B3CCA002F0A9D /* basic-concepts.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "basic-concepts.cpp"; sourceTree = "<group>"; };
+		9B1818142A9CE5AA002F0A9D /* structure-pointer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "structure-pointer.cpp"; sourceTree = "<group>"; };
+		9B1818162A9CE67E002F0A9D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		9B1818182A9CF483002F0A9D /* structure-array.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "structure-array.cpp"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +63,10 @@
 		9B1818092A9B3CCA002F0A9D /* 009StructureAndEnumeration */ = {
 			isa = PBXGroup;
 			children = (
-				9B18180A2A9B3CCA002F0A9D /* main.cpp */,
+				9B1818162A9CE67E002F0A9D /* main.cpp */,
+				9B18180A2A9B3CCA002F0A9D /* basic-concepts.cpp */,
+				9B1818142A9CE5AA002F0A9D /* structure-pointer.cpp */,
+				9B1818182A9CF483002F0A9D /* structure-array.cpp */,
 			);
 			path = 009StructureAndEnumeration;
 			sourceTree = "<group>";
@@ -119,7 +128,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9B18180B2A9B3CCA002F0A9D /* main.cpp in Sources */,
+				9B18180B2A9B3CCA002F0A9D /* basic-concepts.cpp in Sources */,
+				9B1818192A9CF483002F0A9D /* structure-array.cpp in Sources */,
+				9B1818152A9CE5AA002F0A9D /* structure-pointer.cpp in Sources */,
+				9B1818172A9CE67E002F0A9D /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
