@@ -13,14 +13,17 @@ using namespace std;
 void basic_concepts();
 void structure_pointer();
 void structure_array();
+void linked_list();
 
 int main() {
     /** =========basic-concepts(结构体的基本概念)========= */
-    basic_concepts();
+     basic_concepts();
     /** =========structure-pointer(结构体指针)========= */
-    structure_pointer();
+     structure_pointer();
     /** =========structure-array(结构体数组)========= */
-    structure_array();
+     structure_array();
+    /** =========简单链表(linked-list.cpp)========= */
+    linked_list();
     
     
 };

@@ -31,6 +31,10 @@ struct super_girl2{
     char sex = 'X';
     bool appearance = true;
 };
+struct st_t {
+    int a;
+    int *p;
+};
 
 void basic_concepts() {
     cout << endl;
@@ -72,7 +76,22 @@ void basic_concepts() {
     << "性别" << superGirl.sex << endl
     << "颜值" << superGirl.appearance << endl
     << endl;
+    // 结构体中的指针
+    st_t stt;
+    stt.a = 3;
+    memset(&stt, 0, sizeof(st_t));
+    stt.p = new int[100];
+    cout << "sizeof(stt) = " << sizeof(stt) << endl;
+    cout << "调用前: stt.a = " << stt.a << ", stt.p = " << stt.p << endl;
+    // 不要整个结构体清空.
+    // memset(&stt, 0, sizeof(st_t));
+    stt.a=0;
+    // 清空需要对每一个结构体成员进行清空,最好不要对整个结构体进行清空.
+    // 因为难免结构体中会有指针动态内存分配(new xxx),而导致的空地址.
+    memset(stt.p,0,100 * sizeof(int));
+    cout << "调用后: stt.a = " << stt.a << ", stt.p = " << stt.p << endl;
     
+    delete []stt.p;
     
     
     
