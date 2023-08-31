@@ -14,6 +14,8 @@ void basic_concepts();
 void structure_pointer();
 void structure_array();
 void linked_list();
+void union_example();
+void enumeration();
 
 int main() {
     /** =========basic-concepts(结构体的基本概念)========= */
@@ -22,8 +24,12 @@ int main() {
      structure_pointer();
     /** =========structure-array(结构体数组)========= */
      structure_array();
-    /** =========简单链表(linked-list.cpp)========= */
+    /** =========简单链表(linked-list)========= */
     linked_list();
+    /** =========共同体(union)========= */
+    union_example();
+    /** =========枚举(enumeration)========= */
+    enumeration();
     
     
 };
