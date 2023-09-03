@@ -55,6 +55,11 @@ void basic_concepts() {
     func5(p);
     cout << "main 中内存地址是: " << p << ", 内存中的值是: " << *p << endl;
     
+    // 引用的形参和const
+    const int& a1 = 8;
+    // 等同于
+    // int tmp = 8;
+    // const int& a1 = tmp;
     
     
     
