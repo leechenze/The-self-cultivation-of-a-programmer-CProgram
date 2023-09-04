@@ -12,11 +12,13 @@
 using namespace std;
 
 void class_basic();
+void constructor_func();
 
 int main() {
     /** =========类基础(class_basic)========= */
     class_basic();
-    
+    /** =========构造函数(constructor_func)========= */
+    constructor_func();
     
 };
 
