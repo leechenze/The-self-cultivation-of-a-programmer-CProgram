@@ -1,0 +1,5 @@
+# ninja log v5
+0	217	1697011098962348638	CMakeFiles/012Class.dir/main.cpp.o	3154c4fc3b9e4db8
+0	228	1697011098973367057	CMakeFiles/012Class.dir/constructor_func.cpp.o	f03991d2c3281b43
+0	229	1697011098974207089	CMakeFiles/012Class.dir/class_basic.cpp.o	3f2e66173bc2e9cb
+229	265	1697011099012418081	012Class	ce6492a03b6815a4
