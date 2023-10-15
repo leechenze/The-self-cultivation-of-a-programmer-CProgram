@@ -6,4 +6,5 @@ set(CMAKE_CXX_STANDARD 14)
 add_executable(012Class
         class_basic.cpp
         constructor_func.cpp
+        copy_constructor.cpp
         main.cpp)
