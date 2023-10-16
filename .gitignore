@@ -5,3 +5,5 @@
 *.ali
 
 .idea
+
+cmake-build-debug

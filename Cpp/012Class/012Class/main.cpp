@@ -17,6 +17,8 @@ void constructor_func();
 
 void copy_constructor();
 
+void initializer_cuslist();
+
 int main() {
     /** =========类基础(class_basic)========= */
     class_basic();
@@ -24,5 +26,7 @@ int main() {
     constructor_func();
     /** =========拷贝构造函数(copy_constructor)========= */
     copy_constructor();
+    /** =========初始化列表(initializer_list)========= */
+    initializer_cuslist();
 };
 
