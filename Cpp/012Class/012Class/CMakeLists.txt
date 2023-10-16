@@ -7,4 +7,5 @@ add_executable(012Class
         class_basic.cpp
         constructor_func.cpp
         copy_constructor.cpp
+        initializer_cuslist.cpp
         main.cpp)
