@@ -11,9 +11,7 @@ add_executable(014ClassInherit
         inherit_mode.cpp
         inherit_obj_model.cpp
         structure_basic_class.cpp
-
-
-
+        name_shield_class_scope.cpp
 
 
         )

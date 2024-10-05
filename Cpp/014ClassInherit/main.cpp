@@ -15,6 +15,8 @@ void inherit_obj_model();
 
 void structure_basic_class();
 
+void name_shield_class_scope();
+
 int main() {
     /** =========继承的基本概念(class_inherit_basic)========= */
     class_inherit_basic();
@@ -24,7 +26,8 @@ int main() {
     inherit_obj_model();
     /** =========构造基类(structure_basic_class)========= */
     structure_basic_class();
-
+    /** =========名字遮蔽与类作用域(name_shield_class_scope)========= */
+    name_shield_class_scope();
 
 
 };
