@@ -23,7 +23,10 @@ void overloading_new_del_operators();
 
 int simple_memory_pool();
 
-int overloading_parenthesis_operators();
+void overloading_parenthesis_operators();
+
+void overloading_unary_operators();
+
 
 int main() {
     /** =========运算符重载基础(operator_basic)========= */
@@ -49,6 +52,9 @@ int main() {
 
     /** =========重载括号运算符(overloading_parenthesis_operators)========= */
     overloading_parenthesis_operators();
+
+    /** =========重载一元运算符(overloading_unary_operators)========= */
+    overloading_unary_operators();
 
 
 };

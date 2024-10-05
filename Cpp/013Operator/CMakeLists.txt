@@ -13,6 +13,6 @@ add_executable(013Operator
         overloading_new_del_operators.cpp
         simple_memory_pool.cpp
         overloading_parenthesis_operators.cpp
-
+        overloading_unary_operators.cpp
 
         )

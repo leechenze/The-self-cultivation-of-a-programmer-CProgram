@@ -17,7 +17,7 @@ public:
 };
 
 
-int overloading_parenthesis_operators() {
+void overloading_parenthesis_operators() {
     cout << endl;
 
     CGirl5 cgirl5;
