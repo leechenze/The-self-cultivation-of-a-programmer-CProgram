@@ -27,6 +27,10 @@ void overloading_parenthesis_operators();
 
 void overloading_unary_operators();
 
+void auto_type_conversion();
+
+void conversion_func();
+
 
 int main() {
     /** =========运算符重载基础(operator_basic)========= */
@@ -55,6 +59,12 @@ int main() {
 
     /** =========重载一元运算符(overloading_unary_operators)========= */
     overloading_unary_operators();
+
+    /** =========自动类型转换(auto_type_conversion)========= */
+    auto_type_conversion();
+
+    /** =========转换函数(conversion_func)========= */
+    conversion_func();
 
 
 };

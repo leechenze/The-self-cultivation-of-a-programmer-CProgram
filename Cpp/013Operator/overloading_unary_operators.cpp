@@ -39,7 +39,7 @@ public:
 };
 
 
-int overloading_unary_operators() {
+void overloading_unary_operators() {
     cout << endl;
 
     int i60 = 0, i61 = 0;

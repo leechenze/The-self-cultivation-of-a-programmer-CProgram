@@ -14,5 +14,7 @@ add_executable(013Operator
         simple_memory_pool.cpp
         overloading_parenthesis_operators.cpp
         overloading_unary_operators.cpp
+        auto_type_conversion.cpp
+        conversion_func.cpp
 
         )
