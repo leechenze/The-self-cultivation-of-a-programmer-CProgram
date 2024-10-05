@@ -10,5 +10,10 @@ add_executable(014ClassInherit
         class_inherit_basic.cpp
         inherit_mode.cpp
         inherit_obj_model.cpp
+        structure_basic_class.cpp
+
+
+
+
 
         )

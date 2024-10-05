@@ -13,6 +13,8 @@ void inherit_mode();
 
 void inherit_obj_model();
 
+void structure_basic_class();
+
 int main() {
     /** =========继承的基本概念(class_inherit_basic)========= */
     class_inherit_basic();
@@ -20,5 +22,10 @@ int main() {
     inherit_mode();
     /** =========继承的对象模型(inherit_obj_model)========= */
     inherit_obj_model();
+    /** =========构造基类(structure_basic_class)========= */
+    structure_basic_class();
+
+
+
 };
 
