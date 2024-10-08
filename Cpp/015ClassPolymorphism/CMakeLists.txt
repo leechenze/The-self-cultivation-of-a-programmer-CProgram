@@ -8,7 +8,7 @@ add_executable(015ClassPolymorphism
         polymorphism_base_concept.cpp
         polymorphism_application_scenario.cpp
         polymorphism_obj_model.cpp
-
-
+        destruct_derived_classes.cpp
+        pure_virtual_func_abstract_class.cpp
 
         )
