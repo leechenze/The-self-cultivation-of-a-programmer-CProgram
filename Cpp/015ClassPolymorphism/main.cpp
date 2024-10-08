@@ -17,6 +17,10 @@ void destruct_derived_classes();
 
 void pure_virtual_func_abstract_class();
 
+void run_phase_type_identification();
+
+void typeid_and_typeinfoclass();
+
 int main() {
     /** =========多态的基本概念(polymorphism_base_concept)========= */
     polymorphism_base_concept();
@@ -30,6 +34,10 @@ int main() {
     destruct_derived_classes();
     /** =========纯虚函数和抽象类(pure_virtual_func_abstract_class)========= */
     pure_virtual_func_abstract_class();
+    /** =========运行阶段类型识别(run_phase_type_identification)========= */
+    run_phase_type_identification();
+    /** =========typeid运算符和type_info类(typeid_and_typeinfoclass)========= */
+    typeid_and_typeinfoclass();
 
 
 };

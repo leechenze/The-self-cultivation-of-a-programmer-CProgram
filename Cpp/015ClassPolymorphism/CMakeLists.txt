@@ -10,5 +10,7 @@ add_executable(015ClassPolymorphism
         polymorphism_obj_model.cpp
         destruct_derived_classes.cpp
         pure_virtual_func_abstract_class.cpp
+        run_phase_type_identification.cpp
+        typeid_and_typeinfoclass.cpp
 
         )
