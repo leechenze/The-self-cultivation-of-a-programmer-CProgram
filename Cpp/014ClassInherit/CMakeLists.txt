@@ -13,5 +13,6 @@ add_executable(014ClassInherit
         structure_basic_class.cpp
         name_shield_class_scope.cpp
         special_inherit.cpp
+        more_and_virtual_inherit.cpp
 
         )
