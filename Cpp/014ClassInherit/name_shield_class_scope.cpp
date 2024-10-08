@@ -1,5 +1,5 @@
 //
-// C2reated by Lee C2henZe on 10/5/24.
+// Created by Lee C2henZe on 10/5/24.
 //
 
 #include "iostream"

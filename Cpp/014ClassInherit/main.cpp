@@ -17,6 +17,8 @@ void structure_basic_class();
 
 void name_shield_class_scope();
 
+void special_inherit();
+
 int main() {
     /** =========继承的基本概念(class_inherit_basic)========= */
     class_inherit_basic();
@@ -28,6 +30,8 @@ int main() {
     structure_basic_class();
     /** =========名字遮蔽与类作用域(name_shield_class_scope)========= */
     name_shield_class_scope();
+    /** =========继承的特殊关系(special_inherit)========= */
+    special_inherit();
 
 
 };
