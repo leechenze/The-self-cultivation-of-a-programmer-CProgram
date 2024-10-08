@@ -6,8 +6,8 @@ set(CMAKE_CXX_STANDARD 14)
 add_executable(015ClassPolymorphism
         main.cpp
         polymorphism_base_concept.cpp
-
-
+        polymorphism_application_scenario.cpp
+        polymorphism_obj_model.cpp
 
 
 
