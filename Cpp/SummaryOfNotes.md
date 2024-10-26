@@ -1,7 +1,8 @@
 博学之, 审问之, 慎思之, 明辨之, 笃行之;
 零、壹、贰、叁、肆、伍、陆、柒、捌、玖、拾;
 
-视频地址(https://ke.qq.com/course/5855339#term_id=106263629)
+视频地址: (https://ke.qq.com/course/5855339#term_id=106263629)
+         (https://www.bilibili.com/video/BV1o8411x7K3?spm_id_from=333.788.videopod.episodes&vd_source=6122dea75af0b44c85ff18d196f1b32d&p=134)
 
 零.第一个Cpp程序 (helloworld)
 
