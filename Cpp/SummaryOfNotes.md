@@ -1,6 +1,8 @@
 博学之, 审问之, 慎思之, 明辨之, 笃行之;
 零、壹、贰、叁、肆、伍、陆、柒、捌、玖、拾;
 
+视频地址(https://ke.qq.com/course/5855339#term_id=106263629)
+
 零.第一个Cpp程序 (helloworld)
 
     命令行gcc运行:
@@ -1919,7 +1921,7 @@
 
 拾柒.类模版(017ClassTemplate)
     
-    类模版的基本概念(class_template_basic)
+    模板类的基本概念(class_template_basic)
         类模板是通用类的描述，使用任意类型（泛型）来描述类的定义。
         使用类模板的时候，指定具体的数据类型，让编译器生成该类型的类定义。
         语法：
@@ -1936,8 +1938,359 @@
             4）模板类的成员函数可以在类外实现。
             5）可以用new创建模板类对象。
             6）在程序中，模板类的成员函数使用了才会创建。
+        
+    模版类的示例-栈(template_class_stack)
+    模版类的示例-数组(template_class_array)
+        类模板可以有非通用类型参数：
+            1）通常是整型（C++20标准可以用其它）；
+            2）实例化模板时必须用常量表达式；
+            3）模板中不能修改参数的值；
+            4）可以为非通用类型参数提供默认值。
+        优点：在栈上分配内存，易维护，执行速度快，合适小型数组。
+        缺点：在程序中，不同的非通用类型参数将导致编译器生成不同的类。
+        构造函数的方法更通用，因为数据的大小是类的成员（而不是硬编码），可以创建数组大小可变的类。
 
+    嵌套和递归使用模版类(joint_and_recursive_use_of_templates)
+        在C++11之前，嵌套使用模板类的时候，> >之间要加空格。
+        
+    模版类的具体化(template_class_specific)
+        模板类具体化（特化、特例化）有两种：完全具体化和部分具体化。
+        语法请见示例程序。
+        具体化程度高的类优先于具体化程度低的类，具体化的类优先于没有具体化的类。
+        具体化的模板类，成员函数类外实现的代码应该放在源文件中。
     
+    模板类与继承(template_class_inherit)
+        1）模板类继承普通类（常见）。
+        2）普通类继承模板类的实例化版本。
+        3）普通类继承模板类。(常见)
+        4）模板类继承模板类。
+        5）模板类继承模板参数给出的基类（不能是模板类）。
+        
+        1）模板类继承普通类
+            #include <iostream>         // 包含头文件。
+            using namespace std;        // 指定缺省的命名空间。
+            
+            class AA     // 普通类AA。
+            {
+            public:
+            int m_a;
+            AA(int a) :m_a(a) { cout << "调用了AA的构造函数。\n"; }
+            void func1() { cout << "调用了func1()函数：m_a=" << m_a << endl;; }
+            };
+            
+            template<class T1, class T2>
+            class BB:public AA      // 模板类BB。
+            {
+            public:
+            T1 m_x;
+            T2 m_y;
+            BB(const T1 x, const T2 y,int a) : AA(a) , m_x(x), m_y(y) { cout << "调用了BB的构造函数。\n"; }
+            void func2() const { cout << "调用了func2()函数：x = " << m_x << ", y = " << m_y << endl; }
+            };
+            
+            int main()
+            {
+            BB<int, string> bb(8, "我是一只傻傻鸟。",3);
+            bb.func2();
+            bb.func1();
+            }
+        
+        2）普通类继承模板类的实例化版本
+            #include <iostream>         // 包含头文件。
+            using namespace std;        // 指定缺省的命名空间。
+            
+            template<class T1, class T2>
+            class BB      // 模板类BB。
+            {
+            public:
+            T1 m_x;
+            T2 m_y;
+            BB(const T1 x, const T2 y) : m_x(x), m_y(y) { cout << "调用了BB的构造函数。\n"; }
+            void func2() const { cout << "调用了func2()函数：x = " << m_x << ", y = " << m_y << endl; }
+            };
+            
+            class AA:public BB<int,string>     // 普通类AA。
+            {
+            public:
+            int m_a;
+            AA(int a,int x,string y) : BB(x,y),m_a(a) { cout << "调用了AA的构造函数。\n"; }
+            void func1() { cout << "调用了func1()函数：m_a=" << m_a << endl;; }
+            };
+            
+            int main()
+            {
+            AA aa(3,8, "我是一只傻傻鸟。");
+            aa.func1();
+            aa.func2();
+            }
+        
+        3）普通类继承模板类。
+            #include <iostream>         // 包含头文件。
+            using namespace std;        // 指定缺省的命名空间。
+            
+            template<class T1, class T2>
+            class BB      // 模板类BB。
+            {
+            public:
+            T1 m_x;
+            T2 m_y;
+            BB(const T1 x, const T2 y) : m_x(x), m_y(y) { cout << "调用了BB的构造函数。\n"; }
+            void func2() const { cout << "调用了func2()函数：x = " << m_x << ", y = " << m_y << endl; }
+            };
+            
+            template<class T1, class T2>
+            class AA:public BB<T1,T2>     // 普通类AA变成了模板类，才能继承模板类。
+            {
+            public:
+            int m_a;
+            AA(int a, const T1 x, const T2 y) : BB<T1,T2>(x,y),m_a(a) { cout << "调用了AA的构造函数。\n"; }
+            void func1() { cout << "调用了func1()函数：m_a=" << m_a << endl;; }
+            };
+            
+            int main()
+            {
+            AA<int,string> aa(3,8, "我是一只傻傻鸟。");
+            aa.func1();
+            aa.func2();
+            }
+
+        4）模板类继承模板类。
+            #include <iostream>         // 包含头文件。
+            using namespace std;        // 指定缺省的命名空间。
+            
+            template<class T1, class T2>
+            class BB      // 模板类BB。
+            {
+            public:
+            T1 m_x;
+            T2 m_y;
+            BB(const T1 x, const T2 y) : m_x(x), m_y(y) { cout << "调用了BB的构造函数。\n"; }
+            void func2() const { cout << "调用了func2()函数：x = " << m_x << ", y = " << m_y << endl; }
+            };
+            
+            template<class T1, class T2>
+            class AA:public BB<T1,T2>     // 普通类AA变成了模板类，才能继承模板类。
+            {
+            public:
+            int m_a;
+            AA(int a, const T1 x, const T2 y) : BB<T1,T2>(x,y),m_a(a) { cout << "调用了AA的构造函数。\n"; }
+            void func1() { cout << "调用了func1()函数：m_a=" << m_a << endl;; }
+            };
+            
+            template<class T, class T1, class T2>
+            class CC :public BB<T1, T2>   // 模板类继承模板类。
+            {
+            public:
+            T m_a;
+            CC(const T a, const T1 x, const T2 y) : BB<T1, T2>(x, y), m_a(a) { cout << "调用了CC的构造函数。\n"; }
+            void func3() { cout << "调用了func3()函数：m_a=" << m_a << endl;; }
+            };
+            
+            int main()
+            {
+            CC<int,int,string> cc(3,8, "我是一只傻傻鸟。");
+            cc.func3();
+            cc.func2();
+            }
+        
+        5）模板类继承模板参数给出的基类
+            #include <iostream>         // 包含头文件。
+            using namespace std;        // 指定缺省的命名空间。
+            
+            class AA {
+            public:
+            AA()         { cout << "调用了AA的构造函数AA()。\n"; }
+            AA(int a) { cout << "调用了AA的构造函数AA(int a)。\n"; }
+            };
+            
+            class BB {
+            public:
+            BB()         { cout << "调用了BB的构造函数BB()。\n"; }
+            BB(int a) { cout << "调用了BB的构造函数BB(int a)。\n"; }
+            };
+            
+            class CC {
+            public:
+            CC()         { cout << "调用了CC的构造函数CC()。\n"; }
+            CC(int a) { cout << "调用了CC的构造函数CC(int a)。\n"; }
+            };
+            
+            template<class T>
+            class DD {
+            public:
+            DD()         { cout << "调用了DD的构造函数DD()。\n"; }
+            DD(int a) { cout << "调用了DD的构造函数DD(int a)。\n"; }
+            };
+            
+            template<class T>
+            class EE : public T {          // 模板类继承模板参数给出的基类。
+            public:
+            EE() :T()           { cout << "调用了EE的构造函数EE()。\n"; }
+            EE(int a) :T(a) { cout << "调用了EE的构造函数EE(int a)。\n"; }
+            };
+            
+            int main()
+            {
+            EE<AA> ea1;                 // AA作为基类。
+            EE<BB> eb1;                 // BB作为基类。
+            EE<CC> ec1;                 // CC作为基类。
+            EE<DD<int>> ed1;      // EE<int>作为基类。
+            // EE<DD> ed1;                // DD作为基类，错误。
+            }
+
+    模板类与函数(template_class_func)
+        模板类可以用于函数的参数和返回值，有三种形式：
+            1）普通函数，参数和返回值是模板类的实例化版本。
+            2）函数模板，参数和返回值是某种的模板类。
+            3）函数模板，参数和返回值是任意类型（支持普通类和模板类和其它类型）。
+    
+    模板类与友元(template_class_friendship)
+        模板类的友元函数有三类：
+            1）非模板友元：友元函数不是模板函数，而是利用模板类参数生成的函数。
+            2）约束模板友元：模板类实例化时，每个实例化的类对应一个友元函数。
+            3）非约束模板友元：模板类实例化时，如果实例化了n个类，也会实例化n个友元函数，每个实例化的类都拥有n个友元函数。
+
+
+        1）非模板友元示例：
+            #include <iostream>         // 包含头文件。
+            using namespace std;        // 指定缺省的命名空间。
+            
+            template<class T1, class T2>
+            class AA    
+            {
+            T1 m_x;
+            T2 m_y;
+            public:
+            AA(const T1 x, const T2 y) : m_x(x), m_y(y) { }
+            // 非模板友元：友元函数不是模板函数，而是利用模板类参数生成的函数，只能在类内实现。
+            friend void show(const AA<T1, T2>& a)
+            {
+            cout << "x = " << a.m_x << ", y = " << a.m_y << endl;
+            }
+            /* friend void show(const AA<int, string>& a);
+            friend void show(const AA<char, string>& a);*/
+            };
+            
+            //void show(const AA<int, string>& a)
+            //{
+            //    cout << "x = " << a.m_x << ", y = " << a.m_y << endl;
+            //}
+            //
+            //void show(const AA<char, string>& a)
+            //{
+            //    cout << "x = " << a.m_x << ", y = " << a.m_y << endl;
+            //}
+            
+            int main()
+            {
+            AA<int, string> a(88, "我是一只傻傻鸟。");
+            show(a);
+            
+                AA<char, string> b(88, "我是一只傻傻鸟。");
+                show(b);
+            }
+        
+        2）约束模板友元示例：
+            #include <iostream>         // 包含头文件。
+            using namespace std;        // 指定缺省的命名空间。
+            
+            // 约束模板友元：模板类实例化时，每个实例化的类对应一个友元函数。
+            template <typename T>
+            void show(T& a);                                                 // 第一步：在模板类的定义前面，声明友元函数模板。
+            
+            template<class T1, class T2>
+            class AA    // 模板类AA。
+            {
+            friend void show<>(AA<T1, T2>& a);          // 第二步：在模板类中，再次声明友元函数模板。
+            T1 m_x;
+            T2 m_y;
+            
+            public:
+            
+                AA(const T1 x, const T2 y) : m_x(x), m_y(y) { }
+            };
+            
+            template<class T1, class T2>
+            class BB    // 模板类BB。
+            {
+            friend void show<>(BB<T1, T2>& a);          // 第二步：在模板类中，再次声明友元函数模板。
+            T1 m_x;
+            T2 m_y;
+            
+            public:
+            
+                BB(const T1 x, const T2 y) : m_x(x), m_y(y) { }
+            };
+            
+            template <typename T>                                 // 第三步：友元函数模板的定义。
+            void show(T& a)
+            {
+            cout << "通用：x = " << a.m_x << ", y = " << a.m_y << endl;
+            }
+            
+            template <>                                                    // 第三步：具体化版本。
+            void show(AA<int, string>& a)
+            {
+            cout << "具体AA<int, string>：x = " << a.m_x << ", y = " << a.m_y << endl;
+            }
+            
+            template <>                                                    // 第三步：具体化版本。
+            void show(BB<int, string>& a)
+            {
+            cout << "具体BB<int, string>：x = " << a.m_x << ", y = " << a.m_y << endl;
+            }
+            
+            int main()
+            {
+            AA<int, string> a1(88, "我是一只傻傻鸟。");
+            show(a1);         // 将使用具体化的版本。
+            
+                AA<char, string> a2(88, "我是一只傻傻鸟。");
+                show(a2);        // 将使用通用的版本。
+            
+                BB<int, string> b1(88, "我是一只傻傻鸟。");
+                show(b1);         // 将使用具体化的版本。
+            
+                BB<char, string> b2(88, "我是一只傻傻鸟。");
+                show(b2);        // 将使用通用的版本。
+            }
+        3）非约束模板友元
+            #include <iostream>         // 包含头文件。
+            using namespace std;        // 指定缺省的命名空间。
+            
+            // 非类模板约束的友元函数，实例化后，每个函数都是每个每个类的友元。
+            template<class T1, class T2>
+            class AA    
+            {
+            template <typename T> friend void show(T& a);     // 把函数模板设置为友元。
+            T1 m_x;
+            T2 m_y;
+            public:
+            AA(const T1 x, const T2 y) : m_x(x), m_y(y) { }
+            };
+            
+            template <typename T> void show(T& a)                     // 通用的函数模板。
+            {
+            cout << "通用：x = " << a.m_x << ", y = " << a.m_y << endl;
+            }
+            
+            template <>void show(AA<int, string>& a)                 // 函数模板的具体版本。
+            {
+            cout << "具体<int, string>：x = " << a.m_x << ", y = " << a.m_y << endl;
+            }
+            
+            int main()
+            {
+                AA<int, string> a(88, "我是一只傻傻鸟。");
+                show(a);         // 将使用具体化的版本。
+        
+                AA<char, string> b(88, "我是一只傻傻鸟。");
+                show(b);        // 将使用通用的版本。
+            }
+        
+    成员模板类(member_template_class)
+
+    将模板类用作参数(params_template_class)
 
 
 
@@ -1948,6 +2301,248 @@
 
 
 
+
+
+
+
+拾捌.Cpp编译链接和命名空间(018CompileLinkNamingSapce)
+
+    编译预处理(compile_processing)
+        C++程序编译的过程：预处理 -> 编译（优化、汇编）-> 链接
+        预处理指令主要有以下三种：
+            包含头文件：#include
+            宏定义：#define（定义宏）、#undef（删除宏）。
+            条件编译：#ifdef、#ifndef。
+        
+        1）包含头文件
+            #include 包含头文件有两种方式：
+                #include <文件名>：直接从编译器自带的函数库目录中寻找文件。
+                #include "文件名"：先从自定义的目录中寻找文件，如果找不到，再从编译器自带的函数库目录中寻找。
+            #include也包含其它的文件，如：*.h、*.cpp或其它的文件。
+            C++98标准后的头文件：
+                C的标准库：老版本的有.h后缀；新版本没有.h的后缀，增加了字符c的前缀。例如：老版本是<stdio.h>，新版本是<cstdio>，新老版本库中的内容是一样的。在程序中，不指定std命名空间也能使用库中的内容。
+                C++的标准库：老版本的有.h后缀；新版本没有.h的后缀。例如：老版本是<iostream.h>，新版本是<iostream>，老版本已弃用，只能用新版本。在程序中，必须指定std命名空间才能使用库中的内容。
+            注意：用户自定义的头文件还是用.h为后缀。
+        
+        2）宏定义指令
+            无参数的宏：#define 宏名  宏内容
+            有参数的宏：#define MAX(x,y)  ((x)>(y) ? (x) : (y))    MAX(3,5)  ((3)>(5) ? (3) : (5))
+            编译的时候，编译器把程序中的宏名用宏内容替换，是为宏展开（宏替换）。
+            宏可以只有宏名，没有宏内容。
+            在C++中，内联函数可代替有参数的宏，效果更好。
+            C++中常用的宏：
+                当前源代码文件名：__FILE__
+                当前源代码函数名：__FUNCTION__
+                当前源代码行号：__LINE__
+                编译的日期：__DATE__
+                编译的时间：__TIME__
+                编译的时间戳：__TIMESTAMP__
+            当用C++编译程序时，宏__cplusplus就会被定义。
+        
+        3）条件编译
+            最常用的两种：#ifdef、#ifndef    if #define  if not #define
+            #ifdef 宏名
+            程序段一
+            #else
+            程序段二
+            #endif
+            含义：如果#ifdef后面的宏名已存在，则使用程序段一，否则使用程序段二。
+            #ifndef 宏名
+            程序段一
+            #else
+            程序段二
+            #endif
+            含义：如果#ifndef后面的宏名不存在，则使用程序段一，否则使用序段二。
+        
+        4）解决头文件中代码重复包含的问题
+            在C/C++中，在使用预编译指令#include的时候，为了防止头文件被重复包含，有两种方式。
+            第一种：用#ifndef指令。
+                #ifndef _GIRL_
+                #define _GIRL_
+                //代码内容。
+                #endif
+            第二种：把#pragma once指令放在文件的开头。
+                #ifndef方式受C/C++语言标准的支持，不受编译器的任何限制；
+                    而#pragma once方式有些编译器不支持。
+                #ifndef可以针对文件中的部分代码；而#pragma once只能针对整个文件。
+                #ifndef更加灵活，兼容性好；#pragma once操作简单，效率高。
+        
+    编译和链接(compile_and_link)
+        一、源代码的组织
+            头文件（*.h）：#include头文件、函数的声明、结构体的声明、类的声明、模板的声明、内联函数、#define和const定义的常量等。
+            源文件（*.cpp）：函数的定义、类的定义、模板具体化的定义。
+            主程序（main函数所在的程序）：主程序负责实现框架和核心流程，把需要用到的头文件用#include包含进来。
+        二、编译预处理
+            预处理的包括以下方面：
+            1）处理#include头文件包含指令。
+            2）处理#ifdef #else #endif、#ifndef #else #endif条件编译指令。
+            3）处理#define宏定义。
+            4）为代码添加行号、文件名和函数名。
+            5）删除注释。
+            6）保留部分#pragma编译指令（编译的时候会用到）。
+        三、编译
+            将预处理生成的文件，经过词法分析、语法分析、语义分析以及优化和汇编后，编译成若干个目标文件（二进制文件）。
+        四、链接
+            将编译后的目标文件，以及它们所需要的库文件链接在一起，形成一个体整。
+        五、更多细节
+            1）分开编译的好处：每次只编译修改过的源文件，然后再链接，效率最高。
+            2）编译单个*.cpp文件的时候，必须要让编译器知道名称的存在，否则会出现找不到标识符的错误。（直接和间接包含头文件都可以）
+            3）编译单个*.cpp文件的时候，编译器只需要知道名称的存在，不会把它们的定义一起编译。
+            4）如果函数和类的定义不存在，编译不会报错，但链接会出现无法解析的外部命令。
+            5）链接的时候，变量、函数和类的定义只能有一个，否则会出现重定义的错误。（如果把变量、函数和类的定义放在*.h文件中，*.h会被多次包含，链接前可能存在多个副本；如果放在*.cpp文件中，*.cpp文件不会被包含，只会被编译一次，链接前只存在一个版本）
+            6）把变量、函数和类的定义放在*.h中是不规范的做法，如果*.h被多个*.cpp包含，会出现重定义。
+            7）用#include包含*.cpp也是不规范的做法，原理同上。
+            8）尽可能不使用全局变量，如果一定要用，要在*.h文件中声明（需要加extern关键字），在*.cpp文件中定义。
+            9）全局的const常量在头文件中定义（const常量仅在单个文件内有效）。
+            10）*.h文件重复包含的处理方法只对单个的*.cpp文件有效，不是整个项目。
+            11）函数模板和类模板的声明和定义可以分开书写，但它们的定义并不是真实的定义，只能放在*.h文件中；函数模板和类模板的具体化版本的代码是真实的定义，所以放在*.cpp文件中。
+            12）Linux下C++编译和链接的原理与VS一样。
+    
+    命名空间(naming_space)
+        在实际开发中，较大型的项目会使用大量的全局名字，如类、函数、模板、变量等，很容易出现名字冲突的情况。
+        命名空间分割了全局空间，每个命名空间是一个作用域，防止名字冲突。
+        一、语法
+            创建命名空间：
+            namespace 命名空间的名字
+            {
+            // 类、函数、模板、变量的声明和定义。
+            }
+            创建命名空间的别名：
+            namespace 别名=原名;
+        二、使用命名空间
+            在同一命名空间内的名字可以直接访问，该命名空间之外的代码则必须明确指出命名空间。
+            1）运算符::
+            语法：命名空间::名字
+            简单明了，且不会造成任何冲突，但使用起来比较繁琐。
+            2）using声明
+            语法：using 命名空间::名字
+            用using声明名后，就可以进行直接使用名称。
+            如果该声明区域有相同的名字，则会报错。
+            3）using编译指令
+            语法：using namespace命名空间
+            using编译指令将使整个命名空间中的名字可用。如果声明区域有相同的名字，局部版本将隐藏命名空间中的名字，不过，可以使用域名解析符使用命名空间中的名称。
+        四、注意事项
+            1）命名空间是全局的，可以分布在多个文件中。
+            2）命名空间可以嵌套。
+            3）在命名空间中声明全局变量，而不是使用外部全局变量和静态变量。
+            4）对于using声明，首选将其作用域设置为局部而不是全局。
+            5）不要在头文件中使用using编译指令，如果非要使用，应将它放在所有的#include之后。
+            6）匿名的命名空间，从创建的位置到文件结束有效。
+
+    类型转换static_cast(type_trans_static_cast)
+        C风格的类型转换很容易理解：
+        语法：
+            (目标类型)表达式或目标类型(表达式);
+        C++认为C风格的类型转换过于松散，可能会带来隐患，不够安全。
+        C++推出了新的类型转换来替代C风格的类型转换，采用更严格的语法检查，降低使用风险。
+        C++新增了四个关键字static_cast、const_cast、reinterpret_cast和dynamic_cast，用于支持C++风格的类型转换。
+        C++的类型转换只是语法上的解释，本质上与C风格的类型转换没什么不同，C语言做不到事情的C++也做不到。
+        语法：
+            static_cast<目标类型>(表达式);
+            const_cast<目标类型>(表达式);
+            reinterpret_cast<目标类型>(表达式);
+            dynamic_cast<目标类型>(表达式);
+
+        一、static_cast
+            1）用于内置数据类型之间的转换
+                除了语法不同，C和C++没有区别。
+                #include <iostream>
+                using namespace std;
+                
+                int main(int argc, char* argv[])
+                {
+                int    ii = 3;
+                long ll = ii;                     // 绝对安全，可以隐式转换，不会出现警告。
+                
+                    double dd = 1.23;
+                    long ll1 = dd;                  // 可以隐式转换，但是，会出现可能丢失数据的警告。
+                    long ll2 = (long)dd;              // C风格：显式转换，不会出现警告。
+                    long ll3 = static_cast<long>(dd);    // C++风格：显式转换，不会出现警告。
+                    cout << "ll1=" << ll1 << ",ll2=" << ll2 << ",ll3=" << ll3 << endl;
+                }
+            2）用于指针之间的转换
+                C风格可以把不同类型的指针进行转换。
+                C++不可以，需要借助void *。
+                #include <iostream>
+                using namespace std;
+                
+                void func(void* ptr) {   // 其它类型指针 -> void *指针 -> 其它类型指针
+                double* pp = static_cast<double*>(ptr);
+                }
+                
+                int main(int argc, char* argv[])
+                {
+                int ii = 10;
+                
+                    //double* pd1 = &ii;                      // 错误，不能隐式转换。
+                    double* pd2 = (double*) &ii;      // C风格，强制转换。
+                    //double* pd3 = static_cast<double*>(&ii);    // 错误，static_cast不支持不同类型指针的转换。
+                
+                    void* pv = &ii;                               // 任何类型的指针都可以隐式转换成void*。
+                    double* pd4 = static_cast<double*>(pv);  // static_cast可以把void *转换成其它类型的指针。
+                    func(&ii);
+                }
+        
+        二、const_cast
+            static_cast不能丢掉指针（引用）的const和volitale属性，const_cast可以。
+            示例：
+                #include <iostream>
+                using namespace std;
+                
+                void func(int *ii)
+                {}
+                
+                int main(int argc, char* argv[])
+                {
+                const int *aa=nullptr;
+                int *bb = (int *)aa;                          // C风格，强制转换，丢掉const限定符。
+                int* cc = const_cast<int*>(aa);      // C++风格，强制转换，丢掉const限定符。
+                
+                    func(const_cast<int *>(aa));
+                }
+        三、reinterpret_cast
+            static_cast不能用于转换不同类型的指针（引用）（不考虑有继承关系的情况），reinterpret_cast可以。
+            reinterpret_cast的意思是重新解释，能够将一种对象类型转换为另一种，不管它们是否有关系。
+            语法：
+                reinterpret_cast<目标类型>(表达式);
+            <目标类型>和(表达式)中必须有一个是指针（引用）类型。
+            reinterpret_cast不能丢掉(表达式)的const或volitale属性。
+            应用场景：
+                1）reinterpret_cast的第一种用途是改变指针（引用）的类型。
+                2）reinterpret_cast的第二种用途是将指针（引用）转换成整型变量。整型与指针占用的字节数必须一致，否则会出现警告，转换可能损失精度。
+                3）reinterpret_cast的第三种用途是将一个整型变量转换成指针（引用）。
+            示例：
+                #include <iostream>
+                using namespace std;
+                
+                void func(void* ptr) {  
+                long long ii = reinterpret_cast<long long>(ptr);
+                cout << "ii=" << ii << endl;
+                }
+                
+                int main(int argc, char* argv[])
+                {
+                long long ii = 10;
+                
+                    func(reinterpret_cast<void *>(ii));
+                }
+
+
+
+
+
+
+
+
+
+
+拾玖.STL容器和算法(019STLContainerAndAlgorithm)
+贰零.智能指针(020SmartPointer)
+贰壹.Cpp文件操作(021CppFileOperate)
+贰贰.Cpp异常和断言(022CppExceptionAndAssertion)
+贰叁.Cpp11新标准(023Cpp11NewStandard)
+贰肆.Cpp11线程(024Cpp11Thread)
+贰伍.可调用对象的绑定器和包装器(025BinderAndPackaging)
 
 
 
