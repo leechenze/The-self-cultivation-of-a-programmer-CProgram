@@ -2289,8 +2289,8 @@
                 show(b);        // 将使用通用的版本。
             }
         
-    成员模板类(member_template_class)
-
+    模板类的成员模板(member_template_class)
+        
     将模板类用作参数(params_template_class)
 
 
