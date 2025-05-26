@@ -11,4 +11,6 @@ add_executable(
 
         compile_processing.cpp
         naming_space.cpp
+        type_trans_static_cast.cpp
+        
 )
