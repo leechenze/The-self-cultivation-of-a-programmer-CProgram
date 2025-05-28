@@ -21,11 +21,11 @@ void string_container() {
     // cout << "s1.size() = " << s1.size() << endl;
 
     /** 将string对象初始化为s指向的NBTS（转换函数）。*/
-    // string(const char *s);
-    string s2("hello world!");
-    cout << "s2 = " << s2 << endl;
-    string s3 = "hello world!";
-    cout << "s3 = " << s3 << endl;
+    // // string(const char *s);
+    // string s2("hello world!");
+    // cout << "s2 = " << s2 << endl;
+    // string s3 = "hello world!";
+    // cout << "s3 = " << s3 << endl;
 
     /** 将string对象初始化为str（拷贝构造函数）。*/
     // // string(const string &str);
@@ -63,8 +63,49 @@ void string_container() {
     // string s12(30, 0);
     // cout << "s12 = " << s12 << endl;
 
-    // TODO string容器的设计目标.
 
+    cout << endl << "========================用string容器存放结构体数据========================" << endl;
+    // 定义结构体
+    struct st_girl{
+        int bh;
+        char name[30];
+        bool yz;
+        double weight;
+        string memo;
+    } girl;
+
+    cout << "超女结构体大小: " << sizeof(struct st_girl) << endl;
+
+    // 创建一个空的string容器: buffer;
+    string buffer;
+    for (int ii = 1; ii <= 10; ii++) {
+        // 对超女结构体成员赋值
+        memset(&girl, 0, sizeof girl);
+        girl.bh = ii;
+        sprintf(girl.name, "西施%02d", ii);
+        girl.yz = true;
+        girl.weight = 48.5 + ii;
+        girl.memo = "中国第一美女";
+
+        // 把结构体追加到buffer中
+        buffer.append((char *)&girl, sizeof(struct st_girl));
+    }
+
+    // 显示容量
+    cout << "buffer.capacity() = " << buffer.capacity() << endl;
+    // 显示实际大小
+    cout << "buffer.size() = " << buffer.size() << endl;
+
+    // 再用一个循环把buffer中的数据全部取出来
+    for(int ii = 0; ii < buffer.size() / sizeof (struct st_girl); ii++){
+        // 初始化超女结构体
+        memset(&girl, 0 , sizeof(struct st_girl));
+        // 把容器中的数据赋值给超女结构体
+        memcpy(&girl, buffer.data() + ii * sizeof(struct st_girl), sizeof(struct st_girl));
+        // 显示超女结构体成员的值
+        cout << "bh=" << girl.bh << ",name=" << girl.name << ",yz=" << girl.yz << ",weight="
+             << girl.weight << ",memo=" << girl.memo << endl;
+    }
 
 
     cout << endl << "========================string_container========================" << endl;

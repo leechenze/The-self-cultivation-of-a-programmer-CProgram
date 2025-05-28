@@ -2564,7 +2564,426 @@
                 1）string(string && str) noexcept：它将一个string对象初始化为string对象str，并可能修改str（移动构造函数）。
                 2）string(initializer_list<char> il)：它将一个string对象初始化为初始化列表il中的字符。
                 例如：string ss = { 'h','e','l','l','o' };
+
+        特性操作
+            size_t max_size() const;    // 返回string对象的最大长度string::npos，此函数意义不大。
+            size_t capacity() const;     // 返回当前容量，可以存放字符的总数。
+            size_t length() const;      // 返回容器中数据的大小（字符串语义）。
+            size_t size() const;         // 返回容器中数据的大小（容器语义）。
+            bool empty() const;     // 判断容器是否为空。
+            void clear();             // 清空容器。
+            void shrink_to_fit();	      // 将容器的容量降到实际大小（需要重新分配内存）。
+            void reserve( size_t size=0);  // 将容器的容量设置为至少size。
+            void resize(size_t len,char c=0);  // 把容器的实际大小置为len，如果len<实际大小，会截断多出的部分；如果len>实际大小，就用字符c填充。
+        字符操作
+            char &operator[](size_t n);
+            const char &operator[](size_t n) const;  // 只读。
+            char &at(size_t n);
+            const char &at(size_t n) const;          // 只读。
+            operator[]和at()返回容器中的第n个元素，但at函数提供范围检查，当越界时会抛出out_of_range异常，operator[]不提供范围检查。
+            const char *c_str() const; // 返回容器中动态数组的首地址，语义：寻找以null结尾的字符串。
+            const char *data() const; // 返回容器中动态数组的首地址，语义：只关心容器中的数据。
+            int copy(char *s, int n, int pos = 0) const; // 把当前容器中的内容，从pos开始的n个字节拷贝到s中，返回实际拷贝的数目。
+        赋值操作
+            给已存在的容器赋值，将覆盖容器中原有的内容。
+            1）string &operator=(const string &str); // 把容器str赋值给当前容器。
+            2）string &assign(const char *s); // 将string对象赋值为s指向的NBTS。
+            3）string &assign(const string &str); // 将string对象赋值为str。
+            4）string &assign(const char *s,size_t n); // 将string对象赋值为s指向的地址后n字节的内容。
+            5）string &assign(const string &str,size_t pos=0,size_t n=npos); // 将sring对象赋值为str从位置pos开始到结尾的字符（或从位置pos开始的n个字符）。
+            6）template<class T> string &assign(T begin,T end); // 将string对象赋值为区间[begin,end]内的字符。
+            7）string &assign(size_t n,char c); // 将string对象赋值为由n个字符c。
+        连接操作
+            把内容追加到已存在容器的后面。
+            1）string &operator+=(const string &str); //把容器str连接到当前容器。
+            2）string &append(const char *s); // 把指向s的NBTS连接到当前容器。
+            3）string &append(const string &str); // 把容器str连接到当前容器。
+            4）string &append(const char *s,size_t n); // 将s指向的地址后n字节的内容连接到当前容器。
+            5）string &append(const string &str,size_t pos=0,size_t n=npos); // 将str从位置pos开始到结尾的字符（或从位置pos开始的n个字符）连接到当前容器。
+            6）template<class T> string &append (T begin,T end); // 将区间[begin,end]内的字符连接到容器。
+            7）string &append(size_t n,char c); // 将n个字符c连接到当前容器。
+        交换操作
+            void swap(string &str);    // 把当前容器与str交换。
+            如果数据量很小，交换的是动态数组中的内容，如果数据量比较大，交换的是动态数组的地址。
+        截取操作
+            string substr(size_t pos = 0,size_t n = npos) const; // 返回pos开始的n个字节组成的子容器。
+        比较操作
+            bool operator==(const string &str1,const string &str2) const; // 比较两个字符串是否相等。
+            int compare(const string &str) const; // 比较当前字符串和str1的大小。
+            int compare(size_t pos, size_t n,const string &str) const; // 比较当前字符串从pos开始的n个字符组成的字符串与str的大小。
+            int compare(size_t pos, size_t n,const string &str,size_t pos2,size_t n2)const; // 比较当前字符串从pos开始的n个字符组成的字符串与str中pos2开始的n2个字符组成的字符串的大小。
+            以下几个函数用于和C风格字符串比较。
+            int compare(const char *s) const;
+            int compare(size_t pos, size_t n,const char *s) const;
+            int compare(size_t pos, size_t n,const char *s, size_t pos2) const;
+        查找操作
+            size_t find(const string& str, size_t pos = 0) const;
+            size_t find(const char* s, size_t pos = 0) const;
+            size_t find(const char* s, size_t pos, size_t n) const;
+            size_t find(char c, size_t pos = 0) const;
             
+            size_t rfind(const string& str, size_t pos = npos) const;
+            size_t rfind(const char* s, size_t pos = npos) const;
+            size_t rfind(const char* s, size_t pos, size_t n) const;
+            size_t rfind(char c, size_t pos = npos) const;
+            
+            size_t find_first_of(const string& str, size_t pos = 0) const;
+            size_t find_first_of(const char* s, size_t pos = 0) const;
+            size_t find_first_of(const char* s, size_t pos, size_t n) const;
+            size_t find_first_of(char c, size_t pos = 0) const;
+            
+            size_t find_last_of(const string& str, size_t pos = npos) const;
+            size_t find_last_of(const char* s, size_t pos = npos) const;
+            size_t find_last_of(const char* s, size_t pos, size_t n) const;
+            size_t find_last_of(char c, size_t pos = npos) const;
+            
+            size_t find_first_not_of(const string& str, size_t pos = 0) const;
+            size_t find_first_not_of(const char* s, size_t pos = 0) const;
+            size_t find_first_not_of(const char* s, size_t pos, size_t n) const;
+            size_t find_first_not_of(char c, size_t pos = 0) const;
+            
+            size_t find_last_not_of(const string& str, size_t pos = npos) const;
+            size_t find_last_not_of(const char* s, size_t pos = npos) const;
+            size_t find_last_not_of(const char* s, size_t pos, size_t n) const;
+            size_t find_last_not_of(char c, size_t pos = npos) const;
+        替换操作
+            string& replace(size_t pos, size_t len, const string& str);
+            string& replace(size_t pos, size_t len, const string& str, size_t subpos, size_t sublen = npos);
+            string& replace(size_t pos, size_t len, const char* s);
+            string& replace(size_t pos, size_t len, const char* s, size_t n);
+            string& replace(size_t pos, size_t len, size_t n, char c);
+            以下函数意义不大。
+            string& replace(iterator i1, iterator i2, const string& str);
+            string& replace(iterator i1, iterator i2, const char* s);
+            string& replace(iterator i1, iterator i2, const char* s, size_t n);
+            string& replace(iterator i1, iterator i2, size_t n, char c);
+            template <class InputIterator>
+            string& replace(iterator i1, iterator i2, InputIterator first, InputIterator last);
+        插入操作
+            string& insert(size_t pos, const string& str);
+            string& insert(size_t pos, const string& str, size_t subpos, size_t sublen = npos);
+            string& insert(size_t pos, const char* s);
+            string& insert(size_t pos, const char* s, size_t n);
+            string& insert(size_t pos, size_t n, char c);
+            以下函数意义不大。
+            iterator insert(iterator p, size_t n, char c);
+            iterator insert(iterator p, char c);
+            template <class InputIterator>
+            iterator insert(iterator p, InputIterator first, InputIterator last);
+        删除操作
+            string &erase(size_t pos = 0, size_t n = npos); // 删除pos开始的n个字符。
+            以下函数意义不大。
+            iterator erase(iterator it); // 删除it指向的字符，返回删除后迭代器的位置。
+            iterator erase(iterator first, iterator last); / /删除[first，last）之间的所有字符，返回删除后迭代器的位置。
+        
+    vector容器(vector_container)
+        vector容器封装了动态数组。
+        包含头文件 #include<vector>
+        vector类模板的声明：
+            template<class T, class Alloc = allocator<T>>
+            class vector{
+            private:
+            T *start_;
+            T *finish_;
+            T *end_;
+            ……
+            }
+        分配器
+            各种STL容器模板都接受一个可选的模板参数，该参数指定使用哪个分配器对象来管理内存
+            如果省略该模板参数的值，将默认使用allocator<T>，用new和delete分配和释放内存。
+        构造函数
+            1）vector();  // 创建一个空的vector容器。
+            2）vector(initializer_list<T> il); // 使用统一初始化列表。
+            3）vector(const vector<T>& v);  // 拷贝构造函数。
+            4）vector(Iterator first, Iterator last);  // 用迭代器创建vector容器。
+            5）vector(vector<T>&& v);  // 移动构造函数（C++11标准）。
+            6）explicit vector(const size_t n);   // 创建vector容器，元素个数为n（容量和实际大小都是n）。
+            7）vector(const size_t n, const T& value);  // 创建vector容器，元素个数为n，值均为value。
+            析构函数~vector()释放内存空间。
+        特性操作
+            size_t max_size() const;     // 返回容器的最大长度，此函数意义不大。
+            size_t capacity() const;      // 返回容器的容量。
+            size_t size() const;          // 返回容器的实际大小（已使用的空间）。
+            bool empty() const;        // 判断容器是否为空。
+            void clear();               // 清空容器。
+            void reserve(size_t size);   // 将容器的容量设置为至少size。
+            void shrink_to_fit();	       // 将容器的容量降到实际大小（需要重新分配内存）。
+            void resize(size_t size);    // 把容器的实际大小置为size。
+            void resize(size_t size,const T &value);  // 把容器的实际大小置为size，如果size<实际大小，会截断多出的部分；如果size>实际大小，就用value填充。
+        元素操作
+            T &operator[](size_t n);
+            const T &operator[](size_t n) const;  // 只读。
+            T &at(size_t n);
+            const T &at(size_t n) const;          // 只读。
+            T *data();            // 返回容器中动态数组的首地址。
+            const T *data() const; // 返回容器中动态数组的首地址。
+            T &front();        // 第一个元素。
+            const T &front();  // 第一个元素，只读。
+            const T &back();  // 最后一个元素，只读。
+            T &back();        // 最后一个元素。
+        赋值操作
+            给已存在的容器赋值，将覆盖容器中原有的内容。
+            1）vector &operator=(const vector<T> &v);    // 把容器v赋值给当前容器。
+            2）vector &operator=(initializer_list<T> il); // 用统一初始化列表给当前容器赋值。
+            3）void assign(initializer_list<T> il);        // 使用统一初始化列表赋值。
+            4）void assign(Iterator first, Iterator last);  // 用迭代器赋值。
+            5）void assign(const size_t n, const T& value);  // 把n个value给容器赋值。
+        交换操作
+            void swap(vector<T> &v);    // 把当前容器与v交换。
+            交换的是动态数组的地址。
+        比较操作
+            bool operator == (const vector<T> & v) const;
+            bool operator != (const vector<T> & v) const;
+        插入和删除
+            1）void push_back(const T& value);  // 在容器的尾部追加一个元素。
+            2）void emplace_back(…);           // 在容器的尾部追加一个元素，…用于构造元素。C++11
+            3）iterator insert(iterator pos, const T& value);  // 在指定位置插入一个元素，返回指向插入元素的迭代器。
+            4）iterator emplace (iterator pos, …);  // 在指定位置插入一个元素，…用于构造元素，返回指向插入元素的迭代器。C++11
+            5）iterator insert(iterator pos, iterator first, iterator last);  // 在指定位置插入一个区间的元素，返回指向第一个插入元素的迭代器。
+            6）void pop_back();                      // 从容器尾部删除一个元素。
+            7）iterator erase(iterator pos);             // 删除指定位置的元素，返回下一个有效的迭代器。
+            8）iterator erase(iterator first, iterator last); // 删除指定区间的元素，返回下一个有效的迭代器。
+        vector的嵌套
+            vector容器可以嵌套使用。
+        注意事项
+            1）迭代器失效的问题
+            resize()、reserve()、assign()、push_back()、pop_back()、insert()、erase()
+            等函数会引起vector容器的动态数组发生变化，可能导致vector迭代器失效。
+
+    迭代器(cus_iterator)
+        迭代器是访问容器中元素的通用方法。
+        如果使用迭代器，不同的容器，访问元素的方法是相同的。
+        迭代器支持的基本操作：赋值（=）、解引用（*）、比较（==和!=）、从左向右遍历（++）。
+        一般情况下，迭代器是指针和移动指针的方法。
+        
+        迭代器有五种分类：
+            1）正向迭代器（Forward Iterator）
+                只能使用++运算符从左向右遍历容器，每次沿容器向右移动一个元素。
+                容器名<元素类型>::iterator 迭代器名;        // 正向迭代器。
+                容器名<元素类型>::const_iterator 迭代器名;  // 常正向迭代器。
+                相关的成员函数：
+                    iterator begin();
+                    const_iterator begin();
+                    const_iterator cbegin();  // 配合auto使用。
+                    iterator end();
+                    const_iterator end();
+                    const_iterator cend();
+            2）双向迭代器（Bidirectional Iterator）
+                具备正向迭代器的功能，还可以反向（从右到左）遍历容器（也是用++），不管是正向还是反向遍历，都可以用--让迭代器后退一个元素。
+                容器名<元素类型>:: reverse_iterator 迭代器名;        // 反向迭代器。
+                容器名<元素类型>:: const_reverse_iterator 迭代器名;  // 常反向迭代器。
+                相关的成员函数：
+                    reverse_iterator rbegin();
+                    const_reverse_iterator crbegin();
+                    reverse_iterator rend();
+                    const_reverse_iterator crend();
+            3）随机访问迭代器（Random Access Iterator）
+                具备双向迭代器的功能，还支持以下操作：
+                用于比较两个迭代器相对位置的关系运算（<、<=、>、>=）。
+                迭代器和一个整数值的加减法运算（+、+=、-、-=）。
+                支持下标运算（iter[n]）。
+                数组的指针是纯天然的随机访问迭代器。
+            4）输入迭代器（Input Iterator）
+            5）输出迭代器（Output Iterator）
+                这两种迭代器比较特殊，它们不是把容器当做操作对象，而是把输入/输出流作为操作对象。
+
+    范围for循环(range_for_loop)
+        对于一个有范围的集合来说，在程序代码中指定循环的范围有时候是多余的，还可能犯错误。
+        C++11中引入了基于范围的for循环。
+        语法：
+            for (迭代的变量 : 迭代的范围)
+            {
+                // 循环体.
+            }
+        注意：
+            1）迭代的范围可以是数组名、容器名、初始化列表或者可迭代的对象（支持begin()、end()、++、==）。
+            2）数组名传入函数后，已退化成指针，不能作为容器名。
+            3）如果容器中的元素是结构体和类，迭代器变量应该申明为引用，加const约束表示只读。
+            4）注意迭代器失效的问题。
+
+    list容器(list_container)
+        list容器封装了双链表。
+        包含头文件 #include<list>
+        list类模板的声明：
+            template<class T, class Alloc = allocator<T>>
+            class list{
+                private:
+                    iterator head;
+                    iterator tail;
+                    ……
+            }
+        构造函数
+            1）list();  // 创建一个空的list容器。
+            2）list(initializer_list<T> il); // 使用统一初始化列表。
+            3）list(const list<T>& l);  // 拷贝构造函数。
+            4）list(Iterator first, Iterator last);  // 用迭代器创建list容器。
+            5）list(list<T>&& l);  // 移动构造函数（C++11标准）。
+            6）explicit list(const size_t n);   // 创建list容器，元素个数为n。
+            7）list(const size_t n, const T& value);  // 创建list容器，元素个数为n，值均为value。
+            析构函数~list()释放内存空间。
+        特性操作
+            size_t max_size() const;     // 返回容器的最大长度，此函数意义不大。
+            size_t size() const;        // 返回容器的实际大小（已使用的空间）。
+            bool empty() const;      // 判断容器是否为空。
+            void clear();             // 清空容器。
+            void resize(size_t size);   // 把容器的实际大小置为size。
+            void resize(size_t size,const T &value);  // 把容器的实际大小置为size，如果size<实际大小，会截断多出的部分；如果size>实际大小，就用value填充。 
+        元素操作
+            T &front();        // 第一个元素。
+            const T &front();  // 第一个元素，只读。
+            const T &back();  // 最后一个元素，只读。
+            T &back();        // 最后一个元素。
+        赋值操作
+            给已存在的容器赋值，将覆盖容器中原有的内容。
+            1）list &operator=(const list<T> &l);         // 把容器l赋值给当前容器。
+            2）list &operator=(initializer_list<T> il);  // 用统一初始化列表给当前容器赋值。
+            3）list assign(initializer_list<T> il);        // 使用统一初始化列表赋值。
+            4）list assign(Iterator first, Iterator last);  // 用迭代器赋值。
+            5）void assign(const size_t n, const T& value);  // 把n个value给容器赋值。
+        交换、反转、排序、归并
+            void swap(list<T> &l);   // 把当前容器与l交换，交换的是链表结点的地址。
+            void reverse();           // 反转链表。
+            void sort();              // 对容器中的元素进行升序排序。
+            void sort(_Pr2 _Pred);    // 对容器中的元素进行排序，排序的方法由_Pred决定（二元函数）。
+            void merge(list<T> &l);  // 采用归并法合并两个已排序的list容器，合并后的list容器仍是有序的。
+        比较操作
+            bool operator == (const vector<T> & l) const;
+            bool operator != (const vector<T> & l) const;
+        插入和删除
+            1）void push_back(const T& value);  // 在链表的尾部追加一个元素。
+            2）void emplace_back(…);           // 在链表的尾部追加一个元素，…用于构造元素。C++11
+            3）iterator insert(iterator pos, const T& value);  // 在指定位置插入一个元素，返回指向插入元素的迭代器。
+            4）iterator emplace (iterator pos, …);  // 在指定位置插入一个元素，…用于构造元素，返回指向插入元素的迭代器。C++11
+            5）iterator insert(iterator pos, iterator first, iterator last);  // 在指定位置插入一个区间的元素，返回指向第一个插入元素的迭代器。
+            6）void pop_back();                      // 从链表尾部删除一个元素。
+            7）iterator erase(iterator pos);             // 删除指定位置的元素，返回下一个有效的迭代器。
+            8）iterator erase(iterator first, iterator last); // 删除指定区间的元素，返回下一个有效的迭代器。
+            9）push_front(const T& value);  // 在链表的头部插入一个元素。
+            10）emplace_front(…);          // 在链表的头部插入一个元素，…用于构造元素。C++11
+            11）splice(iterator pos, const vector<T> & l);	  // 把另一个链表连接到当前链表。
+            12）splice(iterator pos, const vector<T> & l, iterator first, iterator last);	// 把另一个链表指定的区间连接到当前链表。
+            13）splice(iterator pos, const vector<T> & l, iterator first);	// 把另一个链表从first开始的结点连接到当前链表。
+            14）void remove(const T& value);	 // 删除链表中所有值等于value的元素。
+            15）void remove_if(_Pr1 _Pred);    // 删除链表中满足条件的元素，参数_Pred是一元函数。
+            16）void unique();                 // 删除链表中相邻的重复元素，只保留一个。
+            17）void pop_front();              // 从链表头部删除一个元素。
+        
+    pair键值对(key_value_pair)
+        pair是类模板，一般用于表示key/value数据，其实现是结构体。
+        pair结构模板的定义如下：
+            template <class T1, class T2>
+            struct pair
+            {
+                T1 first;     // 第一个成员，一般表示key。
+                T2 second;  // 第二个成员，一般表示value。
+                pair();       // 默认构造函数。
+                pair(const T1 &val1,const T2 &val2);   // 有两个参数的构造函数。
+                pair(const pair<T1,T2> &p);           // 拷贝构造函数。
+                void swap(pair<T1,T2> &p);           // 交换两个pair。
+            };
+        make_pair函数模板的定义如下：
+            template <class T1, class T2>
+            make_pair(const T1 &first,const T2 &second)
+            {
+                return pair<T1,T2>(first, second);
+            }
+    
+    map容器(map_container)
+        红黑树
+            红黑树的节点数 2ⁿ - 1, n表示红黑树的层数
+            2³⁰ - 1 = 1073741824 ≈ 10亿
+            所以用红黑树的在10亿的数据集中查找一个数据, 最多只需要查找30次数或比较30次, 效率很高.
+        
+        map 容器封装了红黑树（平衡二叉排序树），用于查找。
+        包含头文件： #include<map>
+        map容器的元素是pair键值对。
+        map类模板的声明：
+            template <class K, class V, class P = less<K>, class _Alloc = allocator<pair<const K, V >>>
+            class map : public _Tree<_Tmap_traits< K, V, P, _Alloc, false>>
+            {
+                ...
+            }
+            解释：
+                第一个模板参数K：key的数据类型（pair.first）。
+                第二个模板参数V：value的数据类型（pair.second）。
+                第三个模板参数P：排序方法，缺省按key升序。
+                第四个模板参数_Alloc：分配器，缺省用new和delete。
+        map提供了双向迭代器。
+
+        二叉链表：                               
+            struct BTNode                        
+            {                                  
+                pair<K,V> p;       // 键值对。      
+                BTNode *parent;   // 父节点。   
+                BTNode *lchirld;    // 左子树。
+                BTNode *rchild;    // 右子树。
+            };                                      
+        构造函数
+            1）map();  // 创建一个空的map容器。
+            2）map(initializer_list<pair<K,V>> il); // 使用统一初始化列表。
+            3）map(const map<K,V>& m);  // 拷贝构造函数。
+            4）map(Iterator first, Iterator last);  // 用迭代器创建map容器。
+            5）map(map<K,V>&& m);  // 移动构造函数（C++11标准）。
+        特性操作
+            size_t size() const;        // 返回容器的实际大小（已使用的空间）。
+            bool empty() const;      // 判断容器是否为空。
+            void clear();             // 清空容器。
+        元素操作
+            V &operator[](K key);             // 用给定的key访问元素。
+            const V &operator[](K key) const;  // 用给定的key访问元素，只读。
+            V &at(K key);                     // 用给定的key访问元素。
+            const V &at(K key) const;         // 用给定的key访问元素，只读。
+            注意：
+                1）[ ]运算符：如果指定键不存在，会向容器中添加新的键值对；如果指定键不存在，则读取或修改容器中指定键的值。
+                2）at()成员函数：如果指定键不存在，不会向容器中添加新的键值对，而是直接抛出out_of_range 异常。
+        赋值操作
+            给已存在的容器赋值，将覆盖容器中原有的内容。
+            1）map<K,V> &operator=(const map<K,V>& m);         // 把容器m赋值给当前容器。
+            2）map<K,V> &operator=(initializer_list<pair<K,V>> il);  // 用统一初始化列表给当前容器赋值。
+        交换操作
+            void swap(map<K,V>& m);    // 把当前容器与m交换。
+            交换的是树的根结点。
+        比较操作
+            bool operator == (const map<K,V>& m) const;
+            bool operator != (const map<K,V>& m) const;
+        查找操作
+            1）查找键值为key的键值对
+                在map容器中查找键值为key的键值对，如果成功找到，则返回指向该键值对的迭代器；失败返回end()。
+                iterator find(const K &key);
+                const_iterator find(const K &key) const;  // 只读。
+            2）查找键值>=key的键值对
+                在map容器中查找第一个键值>=key的键值对，成功返回迭代器；失败返回end()。
+                iterator lower_bound(const K &key);
+                const_iterator lower_bound(const K &key) const;  // 只读。
+            3）查找键>key的键值对
+                在map容器中查找第一个键值>key的键值对，成功返回迭代器；失败返回end()。
+                iterator upper_bound(const K &key);
+                const_iterator upper_bound(const K &key) const;  // 只读。
+            4）统计键值对的个数
+                统计map容器中键值为key的键值对的个数。
+                size_t count(const K &key) const;
+        插入和删除
+            1）void insert(initializer_list<pair<K,V>> il);  // 用统一初始化列表在容器中插入多个元素。
+            2）pair<iterator,bool> insert(const pair<K,V> &value);  // 在容器中插入一个元素，返回值pair：first是已插入元素的迭代器，second是插入结果。
+            3）void insert(iterator first,iterator last);  // 用迭代器插入一个区间的元素。
+            4）pair<iterator,bool> emplace (...);  // 将创建新键值对所需的数据作为参数直接传入，map容器将直接构造元素。返回值pair：first是已插入元素的迭代器，second是插入结果。
+            5）iterator emplace_hint (const_iterator pos,...); // 功能与第4）个函数相同，第一个参数提示插入位置，该参数只有参考意义，如果提示的位置是正确的，对性能有提升，如果提示的位置不正确，性能反而略有下降，但是，插入是否成功与该参数元关。该参数常用end()和begin()。成功返回新插入元素的迭代器；如果元素已经存在，则插入失败，返回现有元素的迭代器。
+            6）size_t erase(const K & key);  // 从容器中删除指定key的元素，返回已删除元素的个数。
+            7）iterator erase(iterator pos);  // 用迭代器删除元素，返回下一个有效的迭代器。
+            8）iterator erase(iterator first,iterator last);  // 用迭代器删除一个区间的元素，返回下一个有效的迭代器。
+        
+    unordered_map容器(unordered_map_container)
+        
+
+
+
+
+
+
+
+
+
+
 
 贰零.智能指针(020SmartPointer)
 贰壹.Cpp文件操作(021CppFileOperate)
