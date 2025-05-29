@@ -2894,6 +2894,8 @@
             2³⁰ - 1 = 1073741824 ≈ 10亿
             所以用红黑树的在10亿的数据集中查找一个数据, 最多只需要查找30次数或比较30次, 效率很高.
         
+        在实际开发中, 如果数据量小，用数组加二分查找的效率更高，如果数据量很大，用红黑树更合适.
+        
         map 容器封装了红黑树（平衡二叉排序树），用于查找。
         包含头文件： #include<map>
         map容器的元素是pair键值对。
@@ -2971,9 +2973,353 @@
             6）size_t erase(const K & key);  // 从容器中删除指定key的元素，返回已删除元素的个数。
             7）iterator erase(iterator pos);  // 用迭代器删除元素，返回下一个有效的迭代器。
             8）iterator erase(iterator first,iterator last);  // 用迭代器删除一个区间的元素，返回下一个有效的迭代器。
-        
+        分段构造
+            详见分段构造
+            例：m5.emplace(piecewise_construct, forward_as_tuple(8), forward_as_tuple("冰冰", 18));
+            
     unordered_map容器(unordered_map_container)
+        哈希表/散列表
+            哈希表长：数组长度
+            哈希函数：size_t hash(const T &key) {...
+                key%小于哈希表的最大质数.
+                哈希函数的返回值必须小于哈希表的表长
+            装填因子：哈希表中元素的总数/表长，其值越大，效率越低.
+
+        在实际开发中，如果数据量只有几万，用红黑树也可以，如果数据量达到了上千万，必须用哈希表
         
+        unordered_map容器封装了哈希表，查找、插入和删除元素时，只需要比较几次key的值。
+        包含头文件 #include<unordered_map>
+        unordered_map容器的元素是pair键值对。
+        unordered_map类模板的声明：
+            template <class K, class V, class _Hasher = hash<K>, class _Keyeq = equal_to<K>,
+            class _Alloc = allocator<pair<const K, V>>>
+            class unordered_map : public _Hash<_Umap_traits<K, V, _Uhash_compare<K, _Hasher, _Keyeq>, _Alloc, false>>
+            {
+                ...
+            }
+        
+        第一个模板参数K：key的数据类型（pair.first）。
+        第二个模板参数V：value的数据类型（pair.second）。
+        第三个模板参数_Hasher：哈希函数，默认值为std::hash<K>
+        第四个模板参数_Keyeq：比较函数，用于判断两个key是否相等，默认值是std::equal_to<K>。
+        第五个模板参数_Alloc：分配器，缺省用new和delete。
+        创建std::unordered_map类模板的别名：
+            template<class K,class V>
+            using umap = std::unordered_map<K, V>;
+
+        构造函数
+            1）umap();  // 创建一个空的umap容器。
+            2）umap(size_t bucket);  // 创建一个空的umap容器，指定了桶的个数，下同。
+            3）umap(initializer_list<pair<K,V>> il); // 使用统一初始化列表。
+            4）umap(initializer_list<pair<K,V>> il, size_t bucket); // 使用统一初始化列表。
+            5）umap(Iterator first, Iterator last);  // 用迭代器创建umap容器。
+            6）umap(Iterator first, Iterator last, size_t bucket);  // 用迭代器创建umap容器。
+            7）umap(const umap<K,V>& m);  // 拷贝构造函数。
+            8）umap(umap<K,V>&& m);  // 移动构造函数（C++11标准）。
+        特性操作
+            1）size_t size() const;        // 返回容器中元素的个数。
+            2）bool empty() const;      // 判断容器是否为空。
+            3）void clear();             // 清空容器。
+            4）size_t max_bucket_count();     // 返回容器底层最多可以使用多少桶，无意义。
+            5）size_t bucket_count();          // 返回容器桶的数量，空容器有8个桶。
+            6）float load_factor();   // 返回容器当前的装填因子，load_factor() = size() / bucket_count()。
+            7）float max_load_factor();        // 返回容器的最大装填因子，达到该值后，容器将扩充，缺省为1。
+            8）void max_load_factor (float z ); // 设置容器的最大装填因子。
+            9）iterator begin(size_t n);        // 返回第n个桶中第一个元素的迭代器。
+            10）iterator end(size_t n);          // 返回第n个桶中最后一个元素尾后的迭代器。
+            11）void reserve(size_t n);          // 将容器设置为至少n个桶。
+            12）void rehash(size_t n);           // 将桶的数量调整为>=n。如果n大于当前容器的桶数，该方法会将容器重新哈希；如果n的值小于当前容器的桶数，该方法可能没有任何作用。
+            13）size_t bucket_size(size_t n);     // 返回第n个桶中元素的个数，0 <= n < bucket_count()。
+            14）size_t bucket(K &key);          // 返回值为key的元素对应的桶的编号。
+        元素操作
+            V &operator[](K key);             // 用给定的key访问元素。
+            const V &operator[](K key) const;  // 用给定的key访问元素，只读。
+            V &at(K key);                     // 用给定的key访问元素。
+            const V &at(K key) const;         // 用给定的key访问元素，只读。
+            注意：
+                1）[ ]运算符：如果指定键不存在，会向容器中添加新的键值对；如果指定键不存在，则读取或修改容器中指定键的值。
+                2）at()成员函数：如果指定键不存在，不会向容器中添加新的键值对，而是直接抛出out_of_range 异常。
+        赋值操作
+            给已存在的容器赋值，将覆盖容器中原有的内容。
+            1）umap<K,V> &operator=(const umap<K,V>& m);       // 把容器m赋值给当前容器。
+            2）umap<K,V> &operator=(initializer_list<pair<K,V>> il);  // 用统一初始化列表给容器赋值。
+        交换操作
+            void swap(umap<K,V>& m);    // 把当前容器与m交换。
+            交换的是树的根结点。
+        比较操作
+            bool operator == (const umap<K,V>& m) const;
+            bool operator != (const umap<K,V>& m) const;
+        查找操作
+            1）查找键值为key的键值对
+                在umap容器中查找键值为key的键值对，如果成功找到，则返回指向该键值对的迭代器；失败返回end()。
+                iterator find(const K &key);
+                const_iterator find(const K &key) const;  // 只读。
+            2）统计键值对的个数
+                统计umap容器中键值为key的键值对的个数。
+                size_t count(const K &key) const;
+        插入和删除
+            1）void insert(initializer_list<pair<K,V>> il);  // 用统一初始化列表在容器中插入多个元素。
+            2）pair<iterator,bool> insert(const pair<K,V> &value);  // 在容器中插入一个元素，返回值pair：first是已插入元素的迭代器，second是插入结果。
+            3）void insert(iterator first,iterator last);  // 用迭代器插入一个区间的元素。
+            4）pair<iterator,bool> emplace (...);  // 将创建新键值对所需的数据作为参数直接传入，map容器将直接构造元素。返回值pair：first是已插入元素的迭代器，second是插入结果。
+            例：mm.emplace(piecewise_construct, forward_as_tuple(8), forward_as_tuple("冰冰", 18));
+            5）iterator emplace_hint (const_iterator pos,...); // 功能与第4）个函数相同，第一个参数提示插入位置，该参数只有参考意义。对哈希容器来说，此函数意义不大。
+            6）size_t erase(const K & key);  // 从容器中删除指定key的元素，返回已删除元素的个数。
+            7）iterator erase(iterator pos);  // 用迭代器删除元素，返回下一个有效的迭代器。
+            8）iterator erase(iterator first,iterator last);  // 用迭代器删除一个区间的元素，返回下一个有效的迭代器。
+        
+    queue容器(queue_container)
+        queue容器的逻辑结构是队列，物理结构可以是数组或链表，主要用于多线程之间的数据共享。
+        包含头文件 #include<queue>
+        queue类模板的声明：
+            template <class T, class _Container = deque<T>>
+            class queue{
+                ……
+            }
+        第一个模板参数T：元素的数据类型。
+        第二个模板参数_Container：底层容器的类型，缺省是std::deque，可以用std::list，还可以用自定义的类模板。
+        queue容器不支持迭代器。
+        
+        构造函数
+            1）queue();  // 创建一个空的队列。
+            2）queue(const queue<T>& q);  // 拷贝构造函数。
+            3）queue(queue<T>&& q);  // 移动构造函数（C++11标准）。
+            析构函数~queue()释放内存空间。
+        常用操作
+            1）void push(const T& value);  // 元素入队。
+            2）void emplace(…);           // 元素入队，…用于构造元素。C++11
+            3）size_t size() const;          // 返回队列中元素的个数。
+            4）bool empty() const;        // 判断队列是否为空。
+            5）T &front();                 // 返回队头元素。
+            6）const T &front();           // 返回队头元素，只读。
+            7）T &back();                 // 返回队尾元素。
+            8）const T &back();           // 返回队头元素，只读。
+            9）void pop();                // 出队，删除队头的元素。
+        其它操作
+            1）queue &operator=(const queue<T> &q);    // 赋值。
+            2）void swap(queue<T> &q);    // 交换。
+            3）bool operator == (const queue<T> & q) const; // 重载==操作符。
+            4）bool operator != (const queue<T> & q) const; // 重载!=操作符。
+        
+    STL其它容器(stl_other_container)
+        数据结构有数组，链表，二叉树和哈希表。stl的所有容器都是基于这些数据结构实现的。
+
+        array（静态数组）
+            1）物理结构
+            在栈上分配内存，创建数组的时候，数组长度必须是常量，创建后的数组大小不可变。
+                template<class T, size_t size>
+                class array{
+                private:
+                T elems_[size];
+                ……
+                };
+            2）迭代器
+                随机访问迭代器。
+            3）特点
+                部分场景中，比常规数组更方便（能用于模板），可以代替常规数组。
+            4）各种操作
+                1）void fill(const T & val);     // 给数组填充值（清零）。
+                2）size_t size();               // 返回数组的大小。
+                3）bool empty() const;        // 无意义。
+                4）T &operator[](size_t n);
+                5）const T &operator[](size_t n) const;  // 只读。
+                6）T &at(size_t n);
+                7）const T &at(size_t n) const;          // 只读。
+                8）T *data();            // 返回数组的首地址。
+                9）const T *data() const; // 返回数组的首地址。
+                10）T &front();          // 第一个元素。
+                11）const T &front();    // 第一个元素，只读。
+                12）const T &back();    // 最后一个元素，只读。
+                13）T &back();        // 最后一个元素。
+        deque（双端队列）
+            1）物理结构
+                deque容器存储数据的空间是多段等长的连续空间构成，各段空间之间并不一定是连续的。
+                为了管理这些连续空间的分段，deque容器用一个数组存放着各分段的首地址。
+                通过建立数组，deque容器的分段的连续空间能实现整体连续的效果。
+                当deque容器在头部或尾部增加元素时，会申请一段新的连续空间，同时在数组中添加指向该空间的指针。
+            2）迭代器
+                随机访问迭代器。
+            3）特点
+                提高了在两端插入和删除元素的效率，扩展空间的时候，不需要拷贝以前的元素。
+                在中间插入和删除元素的效率比vector更糟糕。
+                随机访问的效率比vector容器略低。
+            4）各种操作
+                与vector容器相同。
+        forward_list（单链表）
+            1）物理结构
+                单链表。
+            2）迭代器
+                正向迭代器。
+            3）特点
+                比双链表少了一个指针，可节省一丢丢内存，减少了两次对指针的赋值操作。
+                如果单链表能满足业务需求，建议使用单链表而不是双链表。
+            4）各种操作
+                与list容器相同。
+        multimap
+            底层是红黑树。
+            multimap和map的区别在：multimap允许关键字重复，而map不允许重复。
+            各种操作与map容器相同。
+        set&multiset
+            底层是红黑树。
+            set和map的区别在：map中存储的是键值对，而set只保存关键字。
+            multiset和set的区别在：multiset允许关键字重复，而set不允许重复。
+            各种操作与map容器相同。
+        unordered_multimap
+            底层是哈希表。
+            unordered_multimap和unordered_map的区别在：unordered_multimap允许关键字重复，而unordered_map不允许重复。
+            各种操作与unordered_map容器相同。
+        unordered_set&unordered_multiset
+            底层是哈希表。
+            unordered_set和unordered_map的区别在：unordered_map中存储的是键值对，而unordered_set只保存关键字。
+            unordered_multiset和unordered_set的区别在：unordered_multiset允许关键字重复，而unordered_set不允许重复。
+            各种操作与unordered_map容器相同。
+        priority_queue（优先队列）
+            优先级队列相当于一个有权值的单向队列queue，在这个队列中，所有元素是按照优先级排列的。
+            底层容器可以用deque和list。
+            各种操作与queue容器相同。
+        stack（栈）
+            底层容器可以用deque和list。
+    
+    STL算法(stl_algorithm)
+        stl算法就是一些常用的函数模板。
+        stl算法实现了很多通用的功能，可以拿来即用。
+        建议复习（函数指针和回调函数）和（重载括号运算符）
+        
+        STL提供了很多处理容器的函数模板，它们的设计是相同的，有以下特点：
+            1）用迭代器表示需要处理数据的区间。
+            2）返回迭代器放置处理数据的结果（如果有结果）。
+            3）接受一个函数对象参数（结构体模板），用于处理数据（如果需要）。
+        函数对象
+            很多STL算法都使用函数对象，也叫函数符（functor），包括函数名、函数指针和仿函数。
+            函数符的概念：
+                1）生成器（generator）：不用参数就可以调用的函数符。
+                2）一元函数（unary function）：用一个参数可以调用的函数符。
+                3）二元函数（binary function）：用两个参数可以调用的函数符。
+            改进的概念：
+                1）一元谓词（predicate）：返回bool值的一元函数。
+                2）二元谓词（binary predicate）：返回bool值的二元函数。
+        预定义的函数对象
+            STL定义了多个基本的函数符，用于支持STL的算法函数。
+            包含头文件：#include <functional>
+            详见可见文档
+        算法函数
+            STL将算法函数分成四组：
+                1）非修改式序列操作：对区间中的每个元素进行操作，这些操作不修改容器的内容。
+                2）修改式序列操作：对区间中的每个元素进行操作，这些操作可以容器的内容（可以修改值，也可以修改排列顺序）。
+                3）排序和相关操作：包括多个排序函数和其它各种函数，如集合操作。
+                4）通用数字运算：包括将区间的内容累积、计算两个容器的内部乘积、计算小计、计算相邻对象差的函数。通常，这些都是数组的操作特性，因此vector是最有可能使用这些操作的容器。
+            前三组在头文件#include <algorithm>中，第四组专用于数值数据，在#include <numeric>中。
+            详见《C++ Primer plus》，第六版，从886页开始。
+        学习要领
+            1）如果容器有成员函数，则使用成员函数，如果没有才考虑用STL的算法函数。
+            2）把全部的STL算法函数过一遍，知道大概有些什么东西。
+            3）如果打算采用某算法函数，一定要搞清楚它的原理，关注它的效率。
+            4）不要太看重这些算法函数，自己写一个也就那么回事。
+        常用函数
+            1）for_each()遍历
+            2）find()遍历
+            3）find_if()遍历
+            4）find_not_if()遍历
+            5）sort()排序
+                STL的sort算法，数据量大时采用QuickSort(快速排序)，分段归并排序。一旦分段后的数据量小于某个门槛（16），为避免QuickSort的递归调用带来过大的额外负荷，就改用InsertSort（插入排序）。如果递归层次过深，还会改用HeapSort（堆排序）。
+                适用于数组容器vector、string、deque（list容器有sort成员函数，红黑树和哈希表没有排序的说法）。
+            6）二分查找
+                lower_bound()
+                upper_bound()
+                equal_range()
+                binary_search()
+
+    智能指针unique_ptr(smart_pointer_unique_ptr)
+        
+        TODO
+
+        unique_ptr独享它指向的对象，也就是说，同时只有一个unique_ptr指向同一个对象，当这个unique_ptr被销毁时，指向的对象也随即被销毁。
+        包含头文件：#include <memory>
+            template <typename T, typename D = default_delete<T>>
+            class unique_ptr
+            {
+                public:
+                    explicit unique_ptr(pointer p) noexcept;	// 不可用于转换函数。
+                    ~unique_ptr() noexcept;    
+                    T& operator*() const;            // 重载*操作符。
+                    T* operator->() const noexcept;  // 重载->操作符。
+                    unique_ptr(const unique_ptr &) = delete;   // 禁用拷贝构造函数。
+                    unique_ptr& operator=(const unique_ptr &) = delete;  // 禁用赋值函数。
+                    unique_ptr(unique_ptr &&) noexcept;	  // 右值引用。
+                    unique_ptr& operator=(unique_ptr &&) noexcept;  // 右值引用。
+                    // ...
+                    private:
+                    pointer ptr;  // 内置的指针。
+            };
+        第一个模板参数T：指针指向的数据类型。
+        第二个模板参数D：指定删除器，缺省用delete释放资源。
+        测试类AA的定义：
+            class AA
+            {
+                public:
+                    string m_name;
+                    AA() { cout << m_name << "调用构造函数AA()。\n"; }
+                    AA(const string & name) : m_name(name) { cout << "调用构造函数AA("<< m_name << ")。\n"; }
+                    ~AA() { cout << m_name << "调用了析构函数~AA(" << m_name << ")。\n"; }
+            };
+        基本用法
+            1）初始化
+                方法一：
+                    unique_ptr<AA> p0(new AA("西施"));     // 分配内存并初始化。
+                方法二：
+                    unique_ptr<AA> p0 = make_unique<AA>("西施");   // C++14标准。
+                    unique_ptr<int> pp1=make_unique<int>();         // 数据类型为int。
+                    unique_ptr<AA> pp2 = make_unique<AA>();       // 数据类型为AA，默认构造函数。
+                    unique_ptr<AA> pp3 = make_unique<AA>("西施");  // 数据类型为AA，一个参数的构造函数。
+                    unique_ptr<AA> pp4 = make_unique<AA>("西施",8); // 数据类型为AA，两个参数的构造函数。
+                方法三（不推荐）：
+                    AA* p = new AA("西施");
+                    unique_ptr<AA> p0(p);                  // 用已存在的地址初始化。
+            2）使用方法
+                智能指针重载了*和->操作符，可以像使用指针一样使用unique_ptr。
+                不支持普通的拷贝和赋值。
+                    AA* p = new AA("西施");
+                    unique_ptr<AA> pu2 = p;              // 错误，不能把普通指针直接赋给智能指针。
+                    unique_ptr<AA> pu3 = new AA("西施"); // 错误，不能把普通指针直接赋给智能指针。
+                    unique_ptr<AA> pu2 = pu1;           // 错误，不能用其它unique_ptr拷贝构造。
+                    unique_ptr<AA> pu3;
+                    pu3 = pu1;                            // 错误，不能用=对unique_ptr进行赋值。
+                不要用同一个裸指针初始化多个unique_ptr对象。
+                get()方法返回裸指针。
+                不要用unique_ptr管理不是new分配的内存。
+            3）用于函数的参数
+                传引用（不能传值，因为unique_ptr没有拷贝构造函数）。
+                裸指针。
+            4）不支持指针的运算（+、-、++、--）
+        更多技巧
+            1）将一个unique_ptr赋给另一个时，如果源unique_ptr是一个临时右值，编译器允许这样做；如果源unique_ptr将存在一段时间，编译器禁止这样做。一般用于函数的返回值。
+                unique_ptr<AA> p0;
+                p0 = unique_ptr<AA>(new AA ("西瓜"));
+            2）用nullptr给unique_ptr赋值将释放对象，空的unique_ptr==nullptr。
+            3）release()释放对原始指针的控制权，将unique_ptr置为空，返回裸指针。（可用于把unique_ptr传递给子函数，子函数将负责释放对象）
+            4）std::move()可以转移对原始指针的控制权。（可用于把unique_ptr传递给子函数，子函数形参也是unique_ptr）
+            5）reset()释放对象。
+                void reset(T * _ptr= (T *) nullptr);
+                pp.reset();        // 释放pp对象指向的资源对象。
+                pp.reset(nullptr);  // 释放pp对象指向的资源对象
+                pp.reset(new AA("bbb"));  // 释放pp指向的资源对象，同时指向新的对象。
+            6）swap()交换两个unique_ptr的控制权。
+                void swap(unique_ptr<T> &_Right);
+            7）unique_ptr也可象普通指针那样，当指向一个类继承体系的基类对象时，也具有多态性质，如同使用裸指针管理基类对象和派生类对象那样。
+            8）unique_ptr不是绝对安全，如果程序中调用exit()退出，全局的unique_ptr可以自动释放，但局部的unique_ptr无法释放。
+            9）unique_ptr提供了支持数组的具体化版本。
+                数组版本的unique_ptr，重载了操作符[]，操作符[]返回的是引用，可以作为左值使用。
+                // unique_ptr<int[]> parr1(new int[3]);          // 不指定初始值。
+                unique_ptr<int[]> parr1(new int[3]{ 33,22,11 });  // 指定初始值。
+                cout << "parr1[0]=" << parr1[0] << endl;
+                cout << "parr1[1]=" << parr1[1] << endl;
+                cout << "parr1[2]=" << parr1[2] << endl;
+                
+                unique_ptr<AA[]> parr2(new AA[3]{string("西施"), string("冰冰"), string("幂幂")});
+                cout << "parr2[0].m_name=" << parr2[0].m_name << endl;
+                cout << "parr2[1].m_name=" << parr2[1].m_name << endl;
+                cout << "parr2[2].m_name=" << parr2[2].m_name << endl;
+            
 
 
 
@@ -2984,6 +3330,18 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+        
 
 贰零.智能指针(020SmartPointer)
 贰壹.Cpp文件操作(021CppFileOperate)

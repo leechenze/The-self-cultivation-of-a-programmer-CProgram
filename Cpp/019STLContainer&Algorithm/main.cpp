@@ -17,6 +17,9 @@ void list_container();
 void key_value_pair();
 void map_container();
 void unordered_map_container();
+void queue_container();
+void stl_algorithm();
+void smart_pointer_unique_ptr();
 
 
 int main() {
@@ -36,6 +39,13 @@ int main() {
     map_container();
     /** =========unordered_map容器(unordered_map_container)========= */
     unordered_map_container();
+    /** =========queue容器(queue_container)========= */
+    queue_container();
+    /** =========STL算法(stl_algorithm)========= */
+    stl_algorithm();
+    /** =========智能指针unique_ptr(smart_pointer_unique_ptr)========= */
+    smart_pointer_unique_ptr();
+
 
 
 };

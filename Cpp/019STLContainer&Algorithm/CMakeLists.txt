@@ -15,6 +15,10 @@ add_executable(019STLContainer_Algorithm
         key_value_pair.cpp
         map_container.cpp
         unordered_map_container.cpp
+        queue_container.cpp
+        stl_other_container.cpp
+        stl_algorithm.cpp
+        smart_pointer_unique_ptr.cpp
 
         )
 
