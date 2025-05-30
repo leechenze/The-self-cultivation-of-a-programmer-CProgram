@@ -3229,10 +3229,40 @@
                 equal_range()
                 binary_search()
 
-    智能指针unique_ptr(smart_pointer_unique_ptr)
-        
-        TODO
 
+
+
+
+
+
+
+
+
+
+
+贰零.智能指针(020SmartPointer)
+
+    智能指针解释：
+        手动指针：堆区的内存一定要手动释放，否则会发生内存的泄漏
+            new和new[]的内存需要用delete和deletet[]释放
+            程序员的主观失误, 忘了或漏了释放.
+                这种情况高级开发者也难免会出现这种失误，和水平没有关系，只是难免会在复杂的代码逻辑中顾全。
+            程序员也不确定什么时候释放
+                比如多个线程共享一个对象的时候，就没办法确定什么时候释放内存。
+        普通指针的释放：
+            类内的指针，在析构函数中释放。
+                通常类里面的指针，会把释放资源的代码放到析构函数中，对象过期时，系统会自动调用析构，释放资源
+            Cpp内置的数据类型，必须手动的delete。
+            new出来的类，还是要手动写delete。
+        智能指针的设计思路（智能指针的目的就是解决资源释放的问题）
+            智能指针是类模板，在栈上创建智能指针对象
+            把普通指针交给智能指针对象
+            智能指针对象过期时，系统会自动调用智能指针对象的析构函数，释放普通指针的内存。
+        cpp的智能指针类型：
+            auto_ptr 是 cpp98标准，c17已弃用
+            unique_ptr,shared_ptr,weak_ptr 是 Cpp11标准
+
+    智能指针unique_ptr(smart_pointer_unique_ptr)
         unique_ptr独享它指向的对象，也就是说，同时只有一个unique_ptr指向同一个对象，当这个unique_ptr被销毁时，指向的对象也随即被销毁。
         包含头文件：#include <memory>
             template <typename T, typename D = default_delete<T>>
@@ -3320,6 +3350,84 @@
                 cout << "parr2[1].m_name=" << parr2[1].m_name << endl;
                 cout << "parr2[2].m_name=" << parr2[2].m_name << endl;
             
+    智能指针shared_ptr(smart_pointer_shared_ptr)
+        shared_ptr共享它指向的对象，多个shared_ptr可以指向（关联）相同的对象，在内部采用计数机制来实现。
+        当新的shared_ptr与对象关联时，引用计数增加1。
+        当shared_ptr超出作用域时，引用计数减1。当引用计数变为0时，则表示没有任何shared_ptr与对象关联，则释放该对象。
+        基本用法
+            shared_ptr的构造函数也是explicit，但是，没有删除拷贝构造函数和赋值函数。
+            1）初始化
+                方法一：
+                    shared_ptr<AA> p0(new AA("西施"));     // 分配内存并初始化。
+                方法二：
+                    shared_ptr<AA> p0 = make_shared<AA>("西施");  // C++11标准，效率更高。
+                    shared_ptr<int> pp1=make_shared<int>();         // 数据类型为int。
+                    shared_ptr<AA> pp2 = make_shared<AA>();       // 数据类型为AA，默认构造函数。
+                    shared_ptr<AA> pp3 = make_shared<AA>("西施");  // 数据类型为AA，一个参数的构造函数。
+                    shared_ptr<AA> pp4 = make_shared<AA>("西施",8); // 数据类型为AA，两个参数的构造函数。
+                方法三：
+                    AA* p = new AA("西施");
+                    shared_ptr<AA> p0(p);                  // 用已存在的地址初始化。
+                方法四：
+                    shared_ptr<AA> p0(new AA("西施"));
+                    shared_ptr<AA> p1(p0);                 // 用已存在的shared_ptr初始化，计数加1。
+                    shared_ptr<AA> p1=p0;                 // 用已存在的shared_ptr初始化，计数加1。
+            2）使用方法
+                智能指针重载了*和->操作符，可以像使用指针一样使用shared_ptr。
+                use_count()方法返回引用计数器的值。
+                unique()方法，如果use_count()为1，返回true，否则返回false。
+                shared_ptr支持赋值，左值的shared_ptr的计数器将减1，右值shared_ptr的计算器将加1。
+                get()方法返回裸指针。
+                不要用同一个裸指针初始化多个shared_ptr。
+                不要用shared_ptr管理不是new分配的内存。
+            3）用于函数的参数
+                与unique_ptr的原理相同。
+            4）不支持指针的运算（+、-、++、--）
+        二、更多细节
+            1）将一个unique_ptr赋给另一个时，如果源unique_ptr是一个临时右值，编译器允许这样做；如果源unique_ptr将存在一段时间，编译器禁止这样做。一般用于函数的返回值。
+            2）用nullptr给shared_ptr赋值将把计数减1，如果计数为0，将释放对象，空的shared_ptr==nullptr。
+            3）release()释放对原始指针的控制权，将unique_ptr置为空，返回裸指针。
+            4）std::move()可以转移对原始指针的控制权。还可以将unique_ptr转移成shared_ptr。
+            5）reset()改变与资源的关联关系。
+                pp.reset();        // 解除与资源的关系，资源的引用计数减1。
+                pp. reset(new AA("bbb"));  // 解除与资源的关系，资源的引用计数减1。关联新资源。
+            6）swap()交换两个shared_ptr的控制权。
+                void swap(shared_ptr<T> &_Right);
+            7）shared_ptr也可象普通指针那样，当指向一个类继承体系的基类对象时，也具有多态性质，如同使用裸指针管理基类对象和派生类对象那样。
+            8）shared_ptr不是绝对安全，如果程序中调用exit()退出，全局的shared_ptr可以自动释放，但局部的shared_ptr无法释放。
+            9）shared_ptr提供了支持数组的具体化版本。
+                数组版本的shared_ptr，重载了操作符[]，操作符[]返回的是引用，可以作为左值使用。
+            10）shared_ptr的线程安全性：
+                shared_ptr的引用计数本身是线程安全（引用计数是原子操作）。
+                多个线程同时读同一个shared_ptr对象是线程安全的。
+                如果是多个线程对同一个shared_ptr对象进行读和写，则需要加锁。
+                多线程读写shared_ptr所指向的同一个对象，不管是相同的shared_ptr对象，还是不同的shared_ptr对象，也需要加锁保护。
+            11）如果unique_ptr能解决问题，就不要用shared_ptr。unique_ptr的效率更高，占用的资源更少。
+            
+    智能指针的删除器(smart_pointer_remover)
+        在默认情况下，智能指针过期的时候，用delete原始指针; 释放它管理的资源。
+        程序员可以自定义删除器，改变智能指针释放资源的行为。
+        删除器可以是全局函数、仿函数和Lambda表达式，形参为原始指针。
+        
+    智能指针weak_ptr(smart_pointer_weak_ptr)
+        shared_ptr存在的问题
+            shared_ptr内部维护了一个共享的引用计数器，多个shared_ptr可以指向同一个资源。
+            如果出现了循环引用的情况，引用计数永远无法归0，资源不会被释放。
+        weak_ptr是什么
+            weak_ptr 是为了配合shared_ptr而引入的，它指向一个由shared_ptr管理的资源但不影响资源的生命周期。也就是说，将一个weak_ptr绑定到一个shared_ptr不会改变shared_ptr的引用计数。
+            不论是否有weak_ptr指向，如果最后一个指向资源的shared_ptr被销毁，资源就会被释放。
+            weak_ptr更像是shared_ptr的助手, 而不是智能指针。
+        如何使用weak_ptr
+            weak_ptr没有重载 ->和 *操作符，不能直接访问资源。
+            有以下成员函数：
+                1）operator=();  // 把shared_ptr或weak_ptr赋值给weak_ptr。
+                2）expired();     // 判断它指资源是否已过期（已经被销毁）。
+                3）lock();        // 返回shared_ptr，如果资源已过期，返回空的shared_ptr。
+                4）reset();       // 将当前weak_ptr指针置为空。
+                5）swap();       // 交换。
+            weak_ptr不控制对象的生命周期，但是，它知道对象是否还活着。
+            用lock()函数把它可以提升为shared_ptr，如果对象还活着，返回有效的shared_ptr，如果对象已经死了，提升会失败，返回一个空的shared_ptr。
+            提升的行为（lock()）是线程安全的。
 
 
 
@@ -3330,21 +3438,26 @@
 
 
 
+贰壹.Cpp文件操作(021CppFileOperate)
 
-
-
-
-
-
-
-
-
+    TODO
+    
+    写入文本文件(write_text_file)
+        
+    读取文本文件(read_text_file)
+        
 
 
         
 
-贰零.智能指针(020SmartPointer)
-贰壹.Cpp文件操作(021CppFileOperate)
+
+
+
+
+
+
+
+
 贰贰.Cpp异常和断言(022CppExceptionAndAssertion)
 贰叁.Cpp11新标准(023Cpp11NewStandard)
 贰肆.Cpp11线程(024Cpp11Thread)

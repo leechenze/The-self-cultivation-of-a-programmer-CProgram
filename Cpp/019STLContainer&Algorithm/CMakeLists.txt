@@ -18,7 +18,6 @@ add_executable(019STLContainer_Algorithm
         queue_container.cpp
         stl_other_container.cpp
         stl_algorithm.cpp
-        smart_pointer_unique_ptr.cpp
 
         )
 
