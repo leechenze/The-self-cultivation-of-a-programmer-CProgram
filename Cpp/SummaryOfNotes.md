@@ -1529,7 +1529,7 @@
             7）+ 一元加    
             8）- 一元求反
         一元运算符通常出现在它们所操作的对象的左边。但是，自增运算符++和自减运算符--有前置和后置之分。
-        C++ 规定，重载++或--时，如果重载函数有一个int形参，编译器处理后置表达式时将调用这个重载函数。
+        C++ 规定，重载++或--时，如果重载函数有一个int形参，编译器处理后置表达式时将调用这个重载函数。
         成员函数版：CGirl &operator++();                   // ++前置
         成员函数版：CGirl operator++(int);                 // 后置++
         非成员函数版：CGirl &operator++(CGirl &);          // ++前置
@@ -1697,7 +1697,7 @@
         虚继承可以解决菱形继承的二义性和数据冗余的问题。
         有了多继承，就存在菱形继承，有了菱形继承就有虚继承，增加了复杂性。
         不提倡使用多继承，只有在比较简单和不出现二义性的情况时才使用多继承，能用单一继承解决的问题就不要使用多继承。
-        如果继承的层次很多、关系很复杂，程序的编写、调试和维护工作都会变得更加困难，由于这个原因，C++之后的很多面向对象的编程语言，例如 Java、C#、PHP 等，都不支持多继承。
+        如果继承的层次很多、关系很复杂，程序的编写、调试和维护工作都会变得更加困难，由于这个原因，C++之后的很多面向对象的编程语言，例如 Java、C#、PHP 等，都不支持多继承。
 
 
 
@@ -1717,7 +1717,7 @@
     
     多态的基本概念(polymorphism_base_concept)
         基类指针只能调用基类的成员函数，不能调用派生类的成员函数。
-        如果在基类的成员函数前加virtual 关键字，把它声明为虚函数，基类指针就可以调用派生类中同名的成员函数，通过派生类中同名的成员函数，就可以访问派生对象的成员变量。
+        如果在基类的成员函数前加virtual 关键字，把它声明为虚函数，基类指针就可以调用派生类中同名的成员函数，通过派生类中同名的成员函数，就可以访问派生对象的成员变量。
         有了虚函数，基类指针指向基类对象时就使用基类的成员函数和数据，指向派生类对象时就使用派生类的成员函数和数据，基类指针表现出了多种形式，这种现象称为多态。
         基类引用也可以使用多态。
         注意：
@@ -2316,7 +2316,7 @@
             条件编译：#ifdef、#ifndef。
         
         1）包含头文件
-            #include 包含头文件有两种方式：
+            #include 包含头文件有两种方式：
                 #include <文件名>：直接从编译器自带的函数库目录中寻找文件。
                 #include "文件名"：先从自定义的目录中寻找文件，如果找不到，再从编译器自带的函数库目录中寻找。
             #include也包含其它的文件，如：*.h、*.cpp或其它的文件。
@@ -2326,8 +2326,8 @@
             注意：用户自定义的头文件还是用.h为后缀。
         
         2）宏定义指令
-            无参数的宏：#define 宏名  宏内容
-            有参数的宏：#define MAX(x,y)  ((x)>(y) ? (x) : (y))    MAX(3,5)  ((3)>(5) ? (3) : (5))
+            无参数的宏：#define 宏名  宏内容
+            有参数的宏：#define MAX(x,y)  ((x)>(y) ? (x) : (y))    MAX(3,5)  ((3)>(5) ? (3) : (5))
             编译的时候，编译器把程序中的宏名用宏内容替换，是为宏展开（宏替换）。
             宏可以只有宏名，没有宏内容。
             在C++中，内联函数可代替有参数的宏，效果更好。
@@ -3438,18 +3438,136 @@
 
 
 
-贰壹.Cpp文件操作(021CppFileOperate)
 
-    TODO
+
+贰壹.Cpp文件操作(021CppFileOperate)
     
     写入文本文件(write_text_file)
+        文本文件一般以行的形式组织数据。
+        包含头文件：#include <fstream>
+        类：ofstream（output file stream）
+        ofstream打开文件的模式（方式）：
+        对于ofstream，不管用哪种模式打开文件，如果文件不存在，都会创建文件。
+            ios::out     		缺省值：会截断文件内容。
+            ios::trunc  		截断文件内容，即覆盖文件内容。（truncate）
+            ios::app   		不截断文件内容，只在文件未尾追加文件。（append）
         
     读取文本文件(read_text_file)
+        包含头文件：#include <fstream>
+        类：ifstream
+        ifstream打开文件的模式（方式）：
+        对于ifstream，如果文件不存在，则打开文件失败。
+            ios::in     		缺省值。
+
+    写入二进制文件(write_binary_file)
+        二进制文件以数据块的形式组织数据，把内存中的数据直接写入文件。
+        包含头文件：#include <fstream>
+        类：ofstream（output file stream）
+        ofstream打开文件的模式（方式）：
+        对于ofstream，不管用哪种模式打开文件，如果文件不存在，都会创建文件。
+            ios::out     		缺省值：会截断文件内容。
+            ios::trunc  		截断文件内容。（truncate）
+            ios::app   		不截断文件内容，只在文件未尾追加文件。（append）
+            ios::binary   	以二进制方式打开文件。
+        操作文本文件和二进制文件的一些细节：
+            1）在windows平台下，文本文件的换行标志是"\r\n"。
+            2）在linux平台下，文本文件的换行标志是"\n"。
+            3）在windows平台下，如果以文本方式打开文件，写入数据的时候，系统会将"\n"转换成"\r\n"；读取数据的时候，系统会将"\r\n"转换成"\n"。 如果以二进制方式打开文件，写和读都不会进行转换。
+            4）在Linux平台下，以文本或二进制方式打开文件，系统不会做任何转换。
+            5）以文本方式读取文件的时候，遇到换行符停止，读入的内容中没有换行符；以二制方式读取文件的时候，遇到换行符不会停止，读入的内容中会包含换行符（换行符被视为数据）。
+            6）在实际开发中，从兼容和语义考虑，一般：
+                a）以文本模式打开文本文件，用行的方法操作它；
+                b）以二进制模式打开二进制文件，用数据块的方法操作它；
+                c）以二进制模式打开文本文件和二进制文件，用数据块的方法操作它，这种情况表示不关心数据的内容。（例如复制文件和传输文件）
+                d）不要以文本模式打开二进制文件，也不要用行的方法操作二进制文件，可能会破坏二进制数据文件的格式，也没有必要。（因为二进制文件中的某字节的取值可能是换行符，但它的意义并不是换行，可能是整数n个字节中的某个字节）
+    
+    读取二进制文件(read_binary_file)
         
 
-
+        包含头文件：#include <fstream>
+        类：ifstream
+        ifstream打开文件的模式（方式）：
+        对于ifstream，如果文件不存在，则打开文件失败。
+            ios::in     		缺省值。
+            ios::binary   	以二进制方式打开文件。
         
-
+    随机存取(random_access)
+        fstream类
+            fstream类既可以读文本/二进制文件，也可以写文本/二进制文件。
+            fstream类的缺省模式是ios::in | ios::out，如果文件不存在，则创建文件；但是，不会清空文件原有的内容。
+            普遍的做法是：
+                1）如果只想写入数据，用ofstream；如果只想读取数据，用ifstream；如果想写和读数据，用fstream，这种情况不多见。不同的类体现不同的语义。
+                2）在Linux平台下，文件的写和读有严格的权限控制。（需要的权限越少越好）
+        文件的位置指针
+            对文件进行读/写操作时，文件的位置指针指向当前文件读/写的位置。
+            很多资料用“文件读指针的位置”和“文件写指针的位置”，容易误导人。不管用哪个类操作文件，文件的位置指针只有一个。
+            1）获取文件位置指针
+                ofstream类的成员函数是tellp()；ifstream类的成员函数是tellg()；fstream类两个都有，效果相同。
+                    std::streampos tellp();
+                    std::streampos tellg();
+            2）移动文件位置指针
+                ofstream类的函数是seekp()；ifstream类的函数是seekg()；fstream类两个都有，效果相同。
+                方法一：
+                    std::istream & seekg(std::streampos _Pos);  
+                    fin.seekg(128);   // 把文件指针移到第128字节。
+                    fin.seekp(128);   // 把文件指针移到第128字节。
+                    fin.seekg(ios::beg) // 把文件指针移动文件的开始。
+                    fin.seekp(ios::end) // 把文件指针移动文件的结尾。
+                方法二：
+                    std::istream & seekg(std::streamoff _Off,std::ios::seekdir _Way);
+                    在ios中定义的枚举类型：
+                    enum seek_dir {beg, cur, end};  // beg-文件的起始位置；cur-文件的当前位置；end-文件的结尾位置。
+                    fin.seekg(30, ios::beg);    // 从文件开始的位置往后移30字节。
+                    fin.seekg(-5, ios::cur);     // 从当前位置往前移5字节。
+                    fin.seekg( 8, ios::cur);     // 从当前位置往后移8字节。
+                    fin.seekg(-10, ios::end);   // 从文件结尾的位置往前移10字节。
+        随机存取
+            随机存取是指直接移动文件的位置指针，在指定位置读取/写入数据。
+            打开文件的模式，如果文件不存在，各种模式都会创建文件。
+                ios::out     		1）会截断文件；2）可以用seekp()移动文件指针。
+                ios:trunc  		1）会截断文件；2）可以用seekp()移动文件指针。
+                ios::app   		1）不会截断文件；2）文件指针始终在文件未尾，不能用seekp()移动文件指针。
+                ios::ate    		打开文件时文件指针指向文件末尾，但是，可以在文件中的任何地方写数据。
+                ios::in        		打开文件进行读操作，即读取文件中的数据。
+                ios::binary       	打开文件为二进制文件，否则为文本文件。
+            注：ate是at end的缩写，trunc是truncate（截断）的缩写，app是append（追加）的缩写。
+            
+    文件缓冲区和流状态(file_buffer_and_stream_status)
+        文件缓冲区
+            文件缓冲区（文件缓存）是系统预留的内存空间，用于存放输入或输出的数据。
+            根据输出和输入流，分为输出缓冲区和输入缓冲区。
+            注意，在C++中，每打开一个文件，系统就会为它分配缓冲区。不同的流，缓冲区是独立的。
+            程序员不用关心输入缓冲区，只关心输出缓冲区就行了。
+            在缺省模式下，输出缓冲区中的数据满了才把数据写入磁盘，但是，这种模式不一定能满足业务的需求。
+            输出缓冲区的操作：
+                1）flush()成员函数
+                    刷新缓冲区，把缓冲区中的内容写入磁盘文件。
+                2）endl
+                    换行，然后刷新缓冲区。
+                3）unitbuf
+                    fout << unitbuf;
+                    设置fout输出流，在每次操作之后自动刷新缓冲区。
+                4）nounitbuf
+                    fout << nounitbuf;
+                    设置fout输出流，让fout回到缺省的缓冲方式。
+        流状态
+            流状态有三个：eofbit、badbit和failbit，取值：1-设置；或0-清除。
+            当三个流状成都为0时，表示一切顺利，good()成员函数返回true。
+            一般判断状态最常用的就是 eof() 和 good() 两个函数。
+                1）eofbit
+                    当输入流操作到达文件未尾时，将设置eofbit。
+                    eof()成员函数检查流是否设置了eofbit。
+                2）badbit
+                    无法诊断的失败破坏流时，将设置badbit。（例如：对输入流进行写入；磁盘没有剩余空间）。
+                    bad()成员函数检查流是否设置了badbit。
+                3）failbit
+                    当输入流操作未能读取预期的字符时，将设置failbit（非致命错误，可挽回，一般是软件错误，例如：想读取一个整数，但内容是一个字符串；文件到了未尾）I/O失败也可能设置failbit。
+                    fail()成员函数检查流是否设置了failbit。
+                4）clear()成员函数清理流状态。
+                5）setstate()成员函数重置流状态。
+            
+    
+    
 
 
 
@@ -3459,7 +3577,353 @@
 
 
 贰贰.Cpp异常和断言(022CppExceptionAndAssertion)
+
+    异常的理念看似有前景，但实际的使用效果并不好。
+    编程社区达成的一致意见是，最好不要使用这项功能。
+    c++98引入异常规范，但在c++11中已经弃用
+    异常的知识没什么用，但是不学又不行，因为过去的一些老项目会有异常的使用
+
+    断言就比较简单了，同时也很有用，在大佬的代码中很常见。
+    
+    cpp异常(cpp_exception)
+        一、异常的语法
+            1）捕获全部的异常
+                try
+                {
+                    // 可能抛出异常的代码。
+                    // throw 异常对象;
+                }
+                // ...表示捕获所有未被具体匹配的异常
+                catch (...)
+                {
+                    // 不管什么异常，都在这里统一处理。
+                }
+            2）捕获指定的异常
+                try
+                {
+                    // 可能抛出异常的代码。
+                    // throw 异常对象;
+                }
+                catch (exception1 e)
+                {
+                    // 发生exception1异常时的处理代码。
+                }
+                catch (exception2 e)
+                {
+                    // 发生exception2异常时的处理代码。
+                }
+            在try语句块中，如果没有发生异常，执行完try语句块中的代码后，将继续执行try语句块之后的代码；如果发生了异常，用throw抛出异常对象，异常对象的类型决定了应该匹配到哪个catch语句块，如果没有匹配到catch语句块，程序将调用abort()函数中止。
+            如果try语句块中用throw抛出异常对象，并且匹配到了catch语句块，执行完catch语句块中的代码后，将继续执行catch语句块之后的代码，不会回到try语句块中。
+            如果程序中的异常没有被捕获，程序将异常中止。
+        栈解旋
+            异常被抛出后，从进入try语句块开始，到异常被抛出之前，这期间在栈上构造的所有对象，都会被自动析构。析构的顺序与构造的顺序相反。这一过程称为栈的解旋。
+            也就是在执行throw前，在try执行期间构造的所有对象被自动析构后，才会进入catch匹配。
+            在堆上构造的对象肿么办？
+        异常规范
+            C++98标准提出了异常规范，目的是为了让使用者知道函数可能会引发哪些异常。
+                void func1() throw(A, B, C);     // 表示该函数可能会抛出A、B、C类型的异常。
+                void func2() throw();           // 表示该函数不会抛出异常。
+                void func3();                  // 该函数不符合C++98的异常规范。
+            C++11标准弃用了异常规范，使用新增的关键字noexcept指出函数不会引发异常。
+                void func4() noexcept;         // 该函数不会抛出异常。
+            在实际开发中，大部分程序员懒得在函数后面加noexcept，弃用异常已是共识，没必要多此一举。
+            关键字noexcept也可以用作运算符，判断表达试（操作数）是否可能引发异常；如果表达式可能引发异常，则返回false，否则返回true。
+        C++标准库异常
+        重点关注的异常
+            1）std::bad_alloc
+                如果内存不足，调用new会产生异常，导致程序中止；如果在new关键字后面加(std::nothrow)选项，则返回nullptr，不会产生异常。
+            2）std::bad_cast
+                dynamic_cast可以用于引用，但是，C++没有与空指针对应的引用值，如果转换请求不正确，会出现std::bad_cast异常。
+            3）std::bad_typeid
+                假设有表达式typeid(*ptr)，当ptr是空指针时，如果ptr是多态的类型，将引发std::bad_typeid异常。
+        逻辑错误异常
+            程序的逻辑错误产生的异常std::logic_error，通过合理的编程可以避免。
+            1）std::out_of_range
+                Defines a type of object to be thrown as exception. It reports errors that are consequence of attempt to access elements out of defined range.
+                It may be thrown by the member functions of std::bitset and std::basic_string, by std::stoi and std::stod families of functions, and by the bounds-checked member access functions (e.g. std::vector::at and std::map::at).
+            2）std::length_error
+                Defines a type of object to be thrown as exception. It reports errors that result from attempts to exceed implementation defined length limits for some object.
+                This exception is thrown by member functions of std::basic_string and std::vector::reserve.
+            3）std::domain_error
+                Defines a type of object to be thrown as exception. It may be used by the implementation to report domain errors, that is, situations where the inputs are outside of the domain on which an operation is defined.
+                The standard library components do not throw this exception (mathematical functions report domain errors as specified in math_errhandling). Third-party libraries, however, use this. For example, boost.math throws std::domain_error if boost::math::policies::throw_on_error is enabled (the default setting).
+            4）std::invalid_argument
+                Defines a type of object to be thrown as exception. It reports errors that arise because an argument value has not been accepted.
+                This exception is thrown by std::bitset::bitset, and the std::stoi and std::stof families of functions.
+        其它异常
+            1）std::range_error
+                Defines a type of object to be thrown as exception. It can be used to report range errors (that is, situations where a result of a computation cannot be represented by the destination type).
+                The only standard library components that throw this exception are std::wstring_convert::from_bytes and std::wstring_convert::to_bytes.
+                The mathematical functions in the standard library components do not throw this exception (mathematical functions report range errors as specified in math_errhandling).
+            2）std::overflow_error
+                Defines a type of object to be thrown as exception. It can be used to report arithmetic overflow errors (that is, situations where a result of a computation is too large for the destination type)
+                The only standard library components that throw this exception are std::bitset::to_ulong and std::bitset::to_ullong.
+                The mathematical functions of the standard library components do not throw this exception (mathematical functions report overflow errors as specified in math_errhandling). Third-party libraries, however, use this. For example, boost.math throws std::overflow_error if boost::math::policies::throw_on_error is enabled (the default setting).
+            3）std::underflow_error
+                Defines a type of object to be thrown as exception. It may be used to report arithmetic underflow errors (that is, situations where the result of a computation is a subnormal floating-point value)
+                The standard library components do not throw this exception (mathematical functions report underflow errors as specified in math_errhandling). Third-party libraries, however, use this. For example, boost.math throws std::underflow_error if boost::math::policies::throw_on_error is enabled (the default setting
+            4）ios_base::failure
+                这个异常，程序员不主动找它就没事。
+            5）std::bad_exception
+                This is a special type of exception specifically designed to be listed in the dynamic-exception-specifier of a function (i.e., in its throw specifier).
+                If a function with bad_exception listed in its dynamic-exception-specifier throws an exception not listed in it and unexpected rethrows it (or throws any other exception also not in the dynamic-exception-specifier), a bad_exception is automatically thrown.
+
+
+    cpp断言(cpp_assertion)
+        断言
+            断言（assertion）是一种常用的编程手段，用于排除程序中不应该出现的逻辑错误。
+            使用断言需要包含头文件<cassert>或<assert.h>，头文件中提供了带参数的宏assert，用于程序在运行时进行断言。
+            语法：assert(表达式);
+            断言就是判断(表达式)的值，如果为0（false），程序将调用abort()函数中止，如果为非0（true），程序继续执行。
+            注意断言失败不是异常，不能捕获。
+            断言可以提高程序的可读性，帮助程序员定位违反了某些前提条件的错误。
+            注意：
+                断言用于处理程序中不应该发生的错误，而非逻辑上可能会发生的错误。
+                不要把需要执行的代码放到断言的表达式中。
+                断言的代码一般放在函数/成员函数的第一行，表达式多为函数的形参。
+        C++11静态断言
+            assert宏是运行时断言，在程序运行的时候才能起作用。
+            C++11新增了静态断言static_assert，用于在编译时检查源代码。
+            使用静态断言不需要包含头文件。
+            语法：static_assert(常量表达式,提示信息);
+            注意：static_assert的第一个参数是常量表达式。而assert的表达式既可以是常量，也可以是变量。
+        
+        
+
+
+
+
+
+
+
+
+
+
 贰叁.Cpp11新标准(023Cpp11NewStandard)
+
+    cpp11标准2011年发布的，十四年了，现在各种平台和编译器都支持，今天来看，已经不能算是新标准了，只是cpp11标准是比较具有跨越性的革新，给开发者带来很多便利。
+    cpp的标准的革新性更新的最具代表版本有
+        cpp11，cpp17，cpp98(初代),cpp20
+    c的标准的革新性更新的最具代表版本有
+        c99，c89/90(初代)，c11
+
+    cpp的新标准(cpp_new_standard)
+        long long 类型
+            基本类型讲到过
+        char16_t 和 char32_t 类型
+            很少用
+        原始字面量
+            详见45章节
+        统一的初始化（列表）
+            Girl g1(3, "西施");    // C++98的风格。
+            Girl g2={5, "冰冰"};  // C++11的风格。
+            Girl g3{8, "幂幂"};    // C++11的风格。
+        自动推导类型 auto
+            详见140章节
+        decltype 关键字
+            详见146章节
+        函数后置返回类型
+            详见146章节
+        模板的别名
+            详见220章节（本章节）
+        空指针 nullptr
+            详见220章节（本章节）
+        智能指针
+            详见193/196章节
+        异常规范方面的修改
+            详见209章节
+        强类型枚举（枚举类）
+            详见220章节（本章节）
+            很少用
+        explicit 关键字
+            详见121章节
+        类内成员初始化
+            详见220章节（本章节）
+        基于范围的 for 循环
+            详见184章节
+        新的 STL 容器
+            详见STL容器(181-191)章节
+        新的 STL 方法（成员函数）
+            详见STL容器(181-191)章节
+            详见220章节（本章节）
+        摒弃 export
+            C++98新增了export关键字，C++11不再使用，但仍保留它作为关键字，供以后使用。
+            很少用
+        嵌套模板的尖括号
+            详见220章节（本章节）
+        final 关键字
+            详见220章节（本章节）
+        override 关键字
+            详见220章节（本章节）
+        数值类型和字符串之间的转换
+            详见220章节（本章节）
+        静态断言 static_assert
+            详见210章节（本章节）
+        常量表达式 constexpr 关键字
+            详见220章节（本章节）
+        默认函数控制 =default 与 =delete
+            详见220章节（本章节）
+        
+    委托构造和继承构造(delegate_construction_and_inheritance_construction)
+        C++11标准新增了委托构造和继承构造两种方法，用于简化代码。
+        委托构造
+            在实际的开发中，为了满足不同的需求，一个类可能会重载多个构造函数。多个构造函数之间可能会有重复的代码。例如变量初始化，如果在每个构造函数中都写一遍，这样代码会显得臃肿。
+            委托构造就是在一个构造函数的初始化列表中调用另一个构造函数。
+            注意：
+                不要生成环状的构造过程。
+                一旦使用委托构造，就不能在初始化列表中初始化其它的成员变量。
+        继承构造
+            在C++11之前，派生类如果要使用基类的构造函数，可以在派生类构造函数的初始化列表中指定。在《126、如何构造基类》中有详细介绍。
+            C++11推出了继承构造（Inheriting Constructor），在派生类中使用using来声明继承基类的构造函数。
+            
+    Lambda函数(lambda_func)
+        lambda函数是C++11标准新增的语法糖，也称为lambda表达式或匿名函数。
+        lambda函数的特点是：距离近、简洁、高效和功能强大。
+        示例：[](const int& no) -> void { cout << "亲爱的" << no << "号：我是一只傻傻鸟。\n"; };
+        语法：详见222章节
+        
+        参数列表
+            参数列表是可选的，类似普通函数的参数列表，如果没有参数列表，()可以省略不写。
+            与普通函数的不同：
+                lambda函数不能有默认参数。
+                所有参数必须有参数名。
+                不支持可变参数。
+        返回类型
+            用后置的方法书写返回类型，类似于普通函数的返回类型，如果不写返回类型，编译器会根据函数体中的代码推断出来。
+            如果有返回类型，建议显式的指定，自动推断可能与预期不一致。
+        函数体
+            类似于普通函数的函数体。
+        捕获列表
+            通过捕获列表，lambda函数可以访问父作用域中的非静态局部变量（静态局部变量可以直接访问，不能访问全局变量）。
+            捕获列表书写在[]中，与函数参数的传递类似，捕获方式可以是值和引用。
+            以下列出了不同的捕获列表的方式。
+                详见222章节
+            1）值捕获
+                与传递参数类似，采用值捕获的前提是变量可以拷贝。
+                与传递参数不同，变量的值是在lambda函数创建时拷贝，而不是调用时拷贝。
+                例如：
+                    size_t v1 = 42;
+                    auto f = [ v1 ]  { return v1; };	// 使用了值捕获，将v1拷贝到名为f的可调用对象。
+                    v1 = 0;
+                    auto j = f();    // j为42，f保存了我们创建它是v1的拷贝。
+                由于被捕获的值是在lambda函数创建时拷贝，因此在随后对其修改不会影响到lambda内部的值。
+                默认情况下，如果以传值方式捕获变量，则在lambda函数中不能修改变量的值。
+            2）引用捕获
+                和函数引用参数一样，引用变量的值在lambda函数体中改变时，将影响被引用的对象。
+                    size_t v1 = 42;
+                    auto f = [ &v1 ]  { return v1; };	 // 引用捕获，将v1拷贝到名为f的可调用对象。
+                    v1 = 0;
+                    auto j = f();	   // j为0。
+                如果采用引用方式捕获变量，就必须保证被引用的对象在lambda执行的时候是存在的。
+            3）隐式捕获
+                除了显式列出我们希望使用的父作域的变量之外，还可以让编译器根据函数体中的代码来推断需要捕获哪些变量，这种方式称之为隐式捕获。
+                隐式捕获有两种方式，分别是[=]和[&]。[=]表示以值捕获的方式捕获外部变量，[&]表示以引用捕获的方式捕获外部变量。
+                    int a = 123;
+                    auto f = [ = ]  { cout << a << endl; };		//值捕获
+                    f(); 	// 输出：123
+                    auto f1 = [ & ] { cout << a++ << endl; }; 		//引用捕获
+                    f1();	//输出：123（采用了后++）
+                    cout << a << endl; 		//输出 124
+            4）混合方式捕获
+                lambda函数还支持混合方式捕获，即同时使用显式捕获和隐式捕获。
+                混合捕获时，捕获列表中的第一个元素必须是 = 或 &，此符号指定了默认捕获的方式是值捕获或引用捕获。
+                需要注意的是：显式捕获的变量必须使用和默认捕获不同的方式捕获。例如：
+                    int i = 10;
+                    int  j = 20;
+                    auto f1 = [ =, &i] () { return j + i; };		// 正确，默认值捕获，显式是引用捕获
+                    auto f2 = [ =, i] () { return i + j; };		// 编译出错，默认值捕获，显式值捕获，冲突了
+                    auto f3 = [ &, &i] () { return i +j; };		// 编译出错，默认引用捕获，显式引用捕获，冲突了
+            5）修改值捕获变量的值
+                在lambda函数中，如果以传值方式捕获变量，则函数体中不能修改该变量，否则会引发编译错误。
+                在lambda函数中，如果希望修改值捕获变量的值，可以加mutable选项，但是，在lambda函数的外部，变量的值不会被修改。
+                    int a = 123;
+                    auto f = [a]()mutable { cout << ++a << endl; }; // 不会报错
+                    cout << a << endl; 	// 输出：123
+                    f(); 					// 输出：124
+                    cout << a << endl; 	// 输出：123
+            6）异常说明
+                lambda可以抛出异常，用throw(…)指示异常的类型，用noexcept指示不抛出任何异常。
+        lambda函数的本质
+            当我们编写了一个lambda函数之后，编译器将它翻译成一个类，该类中有一个重载了()的函数。
+            1）采用值捕获
+                采用值捕获时，lambda函数生成的类用捕获变量的值初始化自己的成员变量。
+                例如：
+                    int a =10;
+                    int b = 20;
+                    auto addfun = [=] (const int c ) -> int { return a+c; };
+                    int c = addfun(b);    
+                    cout << c << endl;
+                等同于：
+                    class Myclass
+                    {
+                        int m_a;		// 该成员变量对应通过值捕获的变量。
+                        public:
+                        Myclass( int a ) : m_a(a){};	// 该形参对应捕获的变量。
+                        // 重载了()运算符的函数，返回类型、形参和函数体都与lambda函数一致。
+                        int operator()(const int c) const
+                        {
+                            return a + c;
+                        }
+                    };
+                默认情况下，由lambda函数生成的类是const成员函数，所以变量的值不能修改。如果加上mutable，相当于去掉const。这样上面的限制就能讲通了。
+            2）采用引用捕获
+                如果lambda函数采用引用捕获的方式，编译器直接引用就行了。
+                唯一需要注意的是，lambda函数执行时，程序必须保证引用的对象有效。
+
+    右值引用(r_value_references)
+        
+        TODO
+        TODO
+        TODO
+        TODO
+        TODO
+        TODO
+        
+        左值、右值
+            在C++中，所有的值不是左值，就是右值。左值是指表达式结束后依然存在的持久化对象，右值是指表达式结束后就不再存在的临时对象。有名字的对象都是左值，右值没有名字。
+            还有一个可以区分左值和右值的便捷方法：看能不能对表达式取地址，如果能，则为左值，否则为右值。
+            C++11扩展了右值的概念，将右值分为了纯右值和将亡值。
+            纯右值：
+                a）非引用返回的临时变量；
+                b）运算表达式产生的结果；
+                c）字面常量（C风格字符串除外，它是地址）。
+            将亡值：
+                与右值引用相关的表达式，例如：将要被移动的对象、T&&函数返回的值、std::move()的返回值、转换成T&&的类型的转换函数的返回值。
+            不懂纯右值和将亡值的区别其实没关系，统一看作右值即可，不影响使用。
+        左值引用、右值引用
+            C++98中的引用很常见，就是给变量取个别名，在C++11中，因为增加了右值引用(rvalue reference)的概念，所以C++98中的引用都称为了左值引用(lvalue reference)。
+            右值引用就是给右值取个名字。
+            语法：数据类型&& 变量名=右值;
+        引入右值引用的主要目的是实现移动语义。
+            左值引用只能绑定（关联、指向）左值，右值引用只能绑定右值，如果绑定的不对，编译就会失败。
+            但是，常量左值引用却是个奇葩，它可以算是一个万能的引用类型，它可以绑定非常量左值、常量左值、右值，而且在绑定右值的时候，常量左值引用还可以像右值引用一样将右值的生命期延长，缺点是，只能读不能改。
+                int a = 1;        
+                const int& ra = a;   // a是非常量左值。
+                
+                const int b = 1;  
+                const int& rb = b;  // b是常量左值。
+                
+                const int& rc = 1;   // 1是右值。
+            总结一下，其中T是一个具体类型：
+                1）左值引用， 使用 T&, 只能绑定左值。
+                2）右值引用， 使用 T&&， 只能绑定右值。
+                3）已命名的右值引用是左值。
+                4）常量左值，使用 const T&, 既可以绑定左值又可以绑定右值。
+
+    移动语义(move_semantics)
+        
+
+
+
+
+
+
+
+
+
+
+
+
 贰肆.Cpp11线程(024Cpp11Thread)
 贰伍.可调用对象的绑定器和包装器(025BinderAndPackaging)
 
