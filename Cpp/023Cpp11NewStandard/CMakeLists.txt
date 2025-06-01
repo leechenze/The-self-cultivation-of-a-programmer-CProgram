@@ -10,5 +10,11 @@ add_executable(023Cpp11NewStandard
         lambda_func.cpp
         r_value_references.cpp
         move_semantics.cpp
+        perfect_forwarding.cpp
+        variadic_templates.cpp
+        chrono_time_operation_library.cpp
+
+
+
 
         )

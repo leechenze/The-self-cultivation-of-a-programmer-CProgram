@@ -3872,13 +3872,6 @@
 
     右值引用(r_value_references)
         
-        TODO
-        TODO
-        TODO
-        TODO
-        TODO
-        TODO
-        
         左值、右值
             在C++中，所有的值不是左值，就是右值。左值是指表达式结束后依然存在的持久化对象，右值是指表达式结束后就不再存在的临时对象。有名字的对象都是左值，右值没有名字。
             还有一个可以区分左值和右值的便捷方法：看能不能对表达式取地址，如果能，则为左值，否则为右值。
@@ -3912,10 +3905,64 @@
 
     移动语义(move_semantics)
         
+        如果一个对象中有堆区资源，需要编写拷贝构造函数和赋值函数，实现深拷贝。
+        深拷贝把对象中的堆区资源复制了一份，如果源对象（被拷贝的对象）是临时对象，拷贝完就没什么用了，这样会造成没有意义的资源申请和释放操作。如果能够直接使用源对象拥有的资源，可以节省资源申请和释放的时间。C++11新增加的移动语义就能够做到这一点。
+        实现移动语义要增加两个函数：移动构造函数和移动赋值函数。
+        移动构造函数的语法：
+            类名(类名&& 源对象){......}
+        移动赋值函数的语法：
+            类名& operator=(类名&& 源对象){……}
+        注意：
+            1）对于一个左值，会调用拷贝构造函数，但是有些左值是局部变量，生命周期也很短，能不能也移动而不是拷贝呢？C++11为了解决这个问题，提供了std::move()方法来将左值转义为右值，从而方便使用移动语义。它其实就是告诉编译器，虽然我是一个左值，但不要对我用拷贝构造函数，用移动构造函数吧。左值对象被转移资源后，不会立刻析构，只有在离开自己的作用域的时候才会析构，如果继续使用左值中的资源，可能会发生意想不到的错误。
+            2）如果没有提供移动构造/赋值函数，只提供了拷贝构造/赋值函数，编译器找不到移动构造/赋值函数就去寻找拷贝构造/赋值函数。
+            3）C++11中的所有容器都实现了移动语义，避免对含有资源的对象发生无谓的拷贝。
+            4）移动语义对于拥有资源（如内存、文件句柄）的对象有效，如果是基本类型，使用移动语义没有意义。
 
+    完美转发(perfect_forwarding)
+        在函数模板中，可以将参数“完美”的转发给其它函数。所谓完美，即不仅能准确的转发参数的值，还能保证被转发参数的左、右值属性不变。
+        C++11标准引入了右值引用和移动语义，所以，能否实现完美转发，决定了该参数在传递过程使用的是拷贝语义还是移动语义。
+        为了支持完美转发，C++11提供了以下方案：
+            1）如果模板中（包括类模板和函数模板）函数的参数书写成为T&& 参数名，那么，函数既可以接受左值引用，又可以接受右值引用。
+            2）提供了模板函数std::forward<T>(参数) ，用于转发参数，如果 参数是一个右值，转发之后仍是右值引用；如果参数是一个左值，转发之后仍是左值引用。
 
-
-
+    可变参数模板(variadic_templates)
+        可变参数模版是C++11新增的最强大的特性之一，它对参数进行了泛化，能支持任意个数、任意数据类型的参数。
+        
+    时间操作库chrono(chrono_time_operation_library)
+        C++11提供了chrono模版库，实现了一系列时间相关的操作（时间长度、系统时间和计时器）。
+        头文件：#include <chrono>
+        命名空间：std::chrono
+        
+        时间长度
+            duration模板类用于表示一段时间（时间长度、时钟周期），如：1小时、8分钟、5秒。
+            duration的定义如下:
+                template<class Rep, class Period = std::ratio<1, 1>>
+                class duration
+                {
+                    ...
+                };
+            为了方便使用，定义了一些常用的时间长度，比如：时、分、秒、毫秒、微秒、纳秒，它们都位于std::chrono命名空间下，定义如下：
+                using hours			= duration<Rep, std::ratio<3600>>	// 小时
+                using minutes			= duration<Rep, std::ratio<60>>		// 分钟
+                using seconds			= duration<Rep>						// 秒
+                using milliseconds		= duration<Rep, std::milli>			// 毫秒
+                using microseconds  	= duration<Rep, std::micro>  		// 微秒
+                using nanoseconds 	= duration<Rep, std::nano>  			// 纳秒
+            注意：
+                duration模板类重载了各种算术运算符，用于操作duration对象。
+                duration模板类提供了count()方法，获取duration对象的值。
+        系统时间
+            system_clock类支持了对系统时钟的访问，提供了三个静态成员函数：
+            返回当前时间的时间点。
+            static std::chrono::time_point<std::chrono::system_clock> now() noexcept;
+            将时间点time_point类型转换为std::time_t 类型。
+            static std::time_t to_time_t( const time_point& t ) noexcept;
+            将std::time_t类型转换为时间点time_point类型。
+            static std::chrono::system_clock::time_point from_time_t( std::time_t t ) noexcept;
+        计时器
+            steady_clock类相当于秒表，操作系统只要启动就会进行时间的累加，常用于耗时的统计（精确到纳秒）。
+            
+    
 
 
 
@@ -3925,9 +3972,84 @@
 
 
 贰肆.Cpp11线程(024Cpp11Thread)
+    
+    在C++11之前，C++没有对线程提供语言级别的支持，各种操作系统和编译器实现线程的方法不一样。
+    C++11增加了线程以及线程相关的类，统一编程风格、简单易用、跨平台。
+
+    创建线程(create_thread)
+        头文件：#include <thread>
+        线程类：std::thread
+        构造函数：
+            1）thread() noexcept;
+                默认构造函，构造一个线程对象，不执行任何任务（不会创建/启动子线程）。
+            2）template< class Function, class... Args >
+            explicit thread(Function&& fx, Args&&... args );
+                创建线程对象，在线程中执行任务函数fx中的代码，args是要传递给任务函数fx的参数。
+                任务函数fx可以是普通函数、类的非静态成员函数、类的静态成员函数、lambda函数、仿函数。
+            3）thread(const thread& ) = delete;
+                删除拷贝构造函数，不允许线程对象之间的拷贝。
+            4）thread(thread&& other ) noexcept;
+                移动构造函数，将线程other的资源所有权转移给新创建的线程对象。
+        赋值函数：
+            thread& operator= (thread&& other) noexcept;
+            thread& operator= (const other&) = delete;
+        线程中的资源不能被复制，如果other是右值，会进行资源所有权的转移，如果other是左值，禁止拷贝。
+        注意：
+            先创建的子线程不一定跑得最快（程序运行的速度有很大的偶然性）。
+            线程的任务函数返回后，子线程将终止。
+            如果主程序（主线程）退出（不论是正常退出还是意外终止），全部的子线程将强行被终止。
+    
+    线程资源的回收(reclaiming_thread_resource)
+        虽然同一个进程的多个线程共享进程的栈空间，但是，每个子线程在这个栈中拥有自己私有的栈空间。所以，线程结束时需要回收资源。
+        回收子线程的资源有两种方法：
+            1）在主程序中，调用join()成员函数等待子线程退出，回收它的资源。如果子线程已退出，join()函数立即返回，否则会阻塞等待，直到子线程退出。
+            2）在主程序中，调用detach()成员函数分离子线程，子线程退出时，系统将自动回收资源。分离后的子线程不可join()。
+        用joinable()成员函数可以判断子线程的分离状态，函数返回布尔类型。
+        
+    this_thread的全局函数(this_thread_global_function)
+        C++11提供了命名空间this_thread来表示当前线程，该命名空间中有四个函数：get_id()、sleep_for()、sleep_until()、yield()。
+            1）get_id()
+                thread::id get_id() noexcept;
+                该函数用于获取线程ID，thread类也有同名的成员函数。
+            2）sleep_for()  VS  Sleep(1000)   Linux sleep(1)
+                template <class Rep, class Period>
+                void sleep_for (const chrono::duration<Rep,Period>& rel_time);
+                该函数让线程休眠一段时间。
+            3）sleep_until()          2022-01-01 12:30:35
+                template <class Clock, class Duration>
+                void sleep_until (const chrono::time_point<Clock,Duration>& abs_time);
+                该函数让线程休眠至指定时间点。（可实现定时任务）
+            4）yield()
+                void yield() noexcept;
+            该函数让线程主动让出自己已经抢到的CPU时间片。
+            5）thread类其它的成员函数
+                void swap(std::thread& other);    // 交换两个线程对象。
+                static unsigned hardware_concurrency() noexcept;   // 返回硬件线程上下文的数量。
+                    The interpretation of this value is system- andimplementation- specific, and may not be exact, but just an approximation.
+                    Note that this does not need to match the actualnumber of processors or cores available in the system: A system can supportmultiple threads per processing unit, or restrict the access to its resourcesto the program.
+                    If this value is not computable or well defined,the function returns 0.
+
+    call_once函数(call_once_function)
+        
+        TODO
+        
+
+
+
+
+
+
+
+
+
 贰伍.可调用对象的绑定器和包装器(025BinderAndPackaging)
 
-
+    可调用对象
+    包装器function
+    绑定器bind
+    可变函数和参数的实现
+    回调函数的实现
+    如何取代虚函数
 
 
 

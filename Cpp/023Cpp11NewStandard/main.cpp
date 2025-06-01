@@ -13,6 +13,9 @@ void delegate_construction_and_inheritance_construction();
 void lambda_func();
 void r_value_references();
 void move_semantics();
+void perfect_forwarding();
+void variadic_templates();
+void chrono_time_operation_library();
 
 int main() {
     /** =========cpp的新标准(cpp_new_standard)========= */
@@ -25,6 +28,13 @@ int main() {
     r_value_references();
     /** =========移动语义(move_semantics)========= */
     move_semantics();
+    /** =========完美转发(perfect_forwarding)========= */
+    perfect_forwarding();
+    /** =========可变参数模板(variadic_templates)========= */
+    variadic_templates();
+    /** =========时间操作库chrono(chrono_time_operation_library)========= */
+    chrono_time_operation_library();
+
 
 
 };
