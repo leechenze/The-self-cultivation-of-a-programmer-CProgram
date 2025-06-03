@@ -7,50 +7,50 @@
 
 using namespace std;
 
-// 普通函数
-void func(int bh, const string &str){
-    for(int i = 0; i < 10; i++) {
-        cout << "第" << i << "次表白：亲爱的" << bh << "号，" << str << endl;
-        this_thread::sleep_for(chrono::seconds(1));
-    }
-}
-// lambda函数
-auto lfunc = [](int bh, const string &str){
-    for(int i = 0; i < 10; i++) {
-        cout << "第" << i << "次表白：亲爱的" << bh << "号，" << str << endl;
-        this_thread::sleep_for(chrono::seconds(1));
-    }
-};
-// 仿函数
-class ob_func{
-public:
-    void operator() (int bh, const string &str){
-        for(int i = 0; i < 10; i++) {
-            cout << "第" << i << "次表白：亲爱的" << bh << "号，" << str << endl;
-            this_thread::sleep_for(chrono::seconds(1));
-        }
-    };
-};
-// 类的静态成员函数
-class class_static_func{
-public:
-    static void func(int bh, const string &str){
-        for(int i = 0; i < 10; i++) {
-            cout << "第" << i << "次表白：亲爱的" << bh << "号，" << str << endl;
-            this_thread::sleep_for(chrono::seconds(1));
-        }
-    }
-};
-// 类的普通成员函数
-class class_func{
-public:
-    void func(int bh, const string &str){
-        for(int i = 0; i < 10; i++) {
-            cout << "第" << i << "次表白：亲爱的" << bh << "号，" << str << endl;
-            this_thread::sleep_for(chrono::seconds(1));
-        }
-    }
-};
+// // 普通函数
+// void func(int bh, const string &str){
+//     for(int i = 0; i < 10; i++) {
+//         cout << "第" << i << "次表白：亲爱的" << bh << "号，" << str << endl;
+//         this_thread::sleep_for(chrono::seconds(1));
+//     }
+// }
+// // lambda函数
+// auto lfunc = [](int bh, const string &str){
+//     for(int i = 0; i < 10; i++) {
+//         cout << "第" << i << "次表白：亲爱的" << bh << "号，" << str << endl;
+//         this_thread::sleep_for(chrono::seconds(1));
+//     }
+// };
+// // 仿函数
+// class ob_func{
+// public:
+//     void operator() (int bh, const string &str){
+//         for(int i = 0; i < 10; i++) {
+//             cout << "第" << i << "次表白：亲爱的" << bh << "号，" << str << endl;
+//             this_thread::sleep_for(chrono::seconds(1));
+//         }
+//     };
+// };
+// // 类的静态成员函数
+// class class_static_func{
+// public:
+//     static void func(int bh, const string &str){
+//         for(int i = 0; i < 10; i++) {
+//             cout << "第" << i << "次表白：亲爱的" << bh << "号，" << str << endl;
+//             this_thread::sleep_for(chrono::seconds(1));
+//         }
+//     }
+// };
+// // 类的普通成员函数
+// class class_func{
+// public:
+//     void func(int bh, const string &str){
+//         for(int i = 0; i < 10; i++) {
+//             cout << "第" << i << "次表白：亲爱的" << bh << "号，" << str << endl;
+//             this_thread::sleep_for(chrono::seconds(1));
+//         }
+//     }
+// };
 
 
 void create_thread() {

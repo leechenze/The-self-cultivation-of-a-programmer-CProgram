@@ -4031,7 +4031,143 @@
 
     call_once函数(call_once_function)
         
-        TODO
+        在多线程环境中，某些函数只能被调用一次，例如：初始化某个对象，而这个对象只能被初始化一次。
+        在线程的任务函数中，可以用std::call_once()来保证某个函数只被调用一次。
+        头文件：#include <mutex>
+            template< class callable, class... Args >
+            void call_once( std::once_flag& flag, Function&& fx, Args&&... args );
+        第一个参数是std::once_flag，用于标记函数fx是否已经被执行过。
+        第二个参数是需要执行的函数fx。
+        后面的可变参数是传递给函数fx的参数。
+        
+    native_handle函数(native_handle_function)
+        C++11定义了线程标准，不同的平台和编译器在实现的时候，本质上都是对操作系统的线程库进行封装，会损失一部分功能。
+        为了弥补C++11线程库的不足，thread类提供了native_handle()成员函数，用于获得与操作系统相关的原生线程句柄，操作系统原生的线程库就可以用原生线程句柄操作线程。
+        
+    线程安全(thread_safe)
+        多个线程访问同一共享资源时会产生冲突
+            例如线程第一章节，创建多个线程时，输出错乱的问题，就是因为多个线程共享cout输出导致的。
+        线程安全是指：多个线程同时访问同一份数据时，程序仍然能正常工作、不会出错。
+        实现线程安全的方法：
+            加锁（std::mutex）
+            原子操作（std::atomic）
+            使用线程安全的容器或函数
+        三个概念解释：
+            顺序性：代码写的顺序 ≠ 实际执行顺序，编译器或 CPU 可能为了性能“打乱”你的代码执行顺序。
+            可见性：多个线程共享的变量，如果一个线程改的变量，其他线程是看不到的，还会用原来的值，即从缓存中读取到的值。
+            原子性：同成功 或 同失败
+        如何保证线程的安全性？
+            volatile关键字
+                保证内存变量的可见性，禁止代码优化（及顺序性中所说的代码从排）
+            原子操作（原子类型）
+            线程同步（即加锁）
+    
+    线程同步/互斥锁(thread_synchronization)
+        线程同步是指多个线程协同工作，如何分配共享资源的问题。
+        c11线程同步包括三方面内容：
+            互斥锁(互斥量)(thread_synchronization_mutex)
+                互斥锁只有加锁和解锁两种状态，确保同一时间只有一个线程访问共享资源。
+                访问共享资源之前加锁，访问完成后释放锁。
+                如果某线程持有锁，其他线程就会形成等待队列。
+
+                C++11提供了四种互斥锁：
+                    mutex：互斥锁。
+                    timed_mutex：带超时机制的互斥锁。
+                    recursive_mutex：递归互斥锁。
+                    recursive_timed_mutex：带超时机制的递归互斥锁。
+                    包含头文件：#include <mutex>
+                    
+                    mutex类
+                        1）加锁lock()
+                            互斥锁有锁定和未锁定两种状态。
+                            如果互斥锁是未锁定状态，调用lock()成员函数的线程会得到互斥锁的所有权，并将其上锁。
+                            如果互斥锁是锁定状态，调用lock()成员函数的线程就会阻塞等待，直到互斥锁变成未锁定状态。
+                        2）解锁unlock()
+                            只有持有锁的线程才能解锁。
+                        3）尝试加锁try_lock()
+                            如果互斥锁是未锁定状态，则加锁成功，函数返回true。
+                            如果互斥锁是锁定状态，则加锁失败，函数立即返回false。（线程不会阻塞等待）
+                    timed_mutex类
+                        增加了两个成员函数：
+                            bool try_lock_for(时间长度);
+                            bool try_lock_until(时间点);
+                    recursive_mutex类
+                        递归互斥锁允许同一线程多次获得互斥锁，可以解决同一线程多次加锁造成的死锁问题。
+                    lock_guard类
+                        lock_guard是模板类，可以简化互斥锁的使用，也更安全。
+                        lock_guard的定义如下：
+                            template<class Mutex>
+                            class lock_guard
+                            {
+                                explicit lock_guard(Mutex& mtx);
+                            }
+                        lock_guard在构造函数中加锁，在析构函数中解锁。
+                        lock_guard采用了RAII思想（在类构造函数中分配资源，在析构函数中释放资源，保证资源在离开作用域时自动释放）。
+            条件变量
+                条件变量是一种线程同步机制，当线条件不满足时，相关线程被一直阻塞，直到某种条件出现，这些线程才会被唤醒
+                为了保护共享资源，条件变量需要和互斥锁结合一起使用。
+                条件变量最常用的就是实现生产/消费模型，该模型可以实现高速缓存队列
+                
+                条件变量是一种线程同步机制。当条件不满足时，相关线程被一直阻塞，直到某种条件出现，这些线程才会被唤醒。
+                C++11的条件变量提供了两个类：
+                    condition_variable：只支持与普通mutex搭配，效率更高。
+                    condition_variable_any：是一种通用的条件变量，可以与任意mutex搭配（包括用户自定义的锁类型）。
+                包含头文件：<condition_variable>
+                
+                condition_variable类
+                    主要成员函数：
+                        1）condition_variable() 默认构造函数。
+                        2）condition_variable(const condition_variable &)=delete 禁止拷贝。
+                        3）condition_variable& condition_variable::operator=(const condition_variable &)=delete 禁止赋值。
+                        4）notify_one() 通知一个等待的线程。
+                        5）notify_all() 通知全部等待的线程。
+                        6）wait(unique_lock<mutex> lock) 阻塞当前线程，直到通知到达。
+                        7）wait(unique_lock<mutex> lock,Pred pred) 循环的阻塞当前线程，直到通知到达且谓词满足。
+                        8）wait_for(unique_lock<mutex> lock,时间长度)
+                        9）wait_for(unique_lock<mutex> lock,时间长度,Pred pred)
+                        10）wait_until(unique_lock<mutex> lock,时间点)
+                        11）wait_until(unique_lock<mutex> lock,时间点,Pred pred)
+                unique_lock类
+                    template <class Mutex> class unique_lock是模板类，模板参数为互斥锁类型。
+                    unique_lock和lock_guard都是管理锁的辅助类，都是RAII风格（在构造时获得锁，在析构时释放锁）。它们的区别在于：为了配合condition_variable，unique_lock还有lock()和unlock()成员函数。
+
+            生产者/消费者模型
+                生产者/消费者模型完整版
+                    thread_synchronization_conditional_variable.cpp
+                基于完整玩演示 condition_variable类 的常用函数的功能用法
+                    thread_synchronization_producer_consumer.cpp
+                
+                条件变量中的wait(mutex)函数
+                    在等待的过程中做了三件事
+                        1.等待把互斥锁解开
+                        2.阻塞，等待被唤醒
+                        3.给互斥锁加锁
+
+    原子类型atomic(atomic_type)
+        C++11提供了atomic<T>模板类（结构体），用于支持原子类型，模板参数可以是bool、char、int、long、long long、指针类型（不支持浮点类型和自定义数据类型）。
+        原子操作由CPU指令提供支持，它的性能比锁和消息传递更高，并且，不需要程序员处理加锁和释放锁的问题，支持修改、读取、交换、比较并交换等操作。
+        头文件：#include <atomic>
+        构造函数：
+            atomic() noexcept = default;  // 默认构造函数。
+            atomic(T val) noexcept;  // 转换函数。
+            atomic(const atomic&) = delete;  // 禁用拷贝构造函数。
+        赋值函数：
+            atomic& operator=(const atomic&) = delete;   // 禁用赋值函数。
+        常用函数：
+            void store(const T val) noexcept;   // 把val的值存入原子变量。
+            T load() noexcept;  // 读取原子变量的值。
+            T fetch_add(const T val) noexcept; // 把原子变量的值与val相加，返回原值。
+            T fetch_sub(const T val) noexcept; // 把原子变量的值减val，返回原值。
+            T exchange(const T val) noexcept; // 把val的值存入原子变量，返回原值。
+            T compare_exchange_strong(T &expect,const T val) noexcept; // 比较原子变量的值和预期值expect，如果当两个值相等，把val存储到原子变量中，函数返回true；如果当两个值不相等，用原子变量的值更新预期值，函数返回false。CAS指令。
+            bool is_lock_free();  // 查询某原子类型的操作是直接用CPU指令（返回true），还是编译器内部的锁（返回false）。
+        原子类型的别名：
+            详见244章节（本章节）
+        注意：
+            atomic<T>模板类重载了整数操作的各种运算符。
+            atomic<T>模板类的模板参数支持指针，但不表示它所指向的对象是原子类型。
+            原子整型可以用作计数器，布尔型可以用作开关。
+            CAS指令是实现无锁队列基础。
         
 
 
@@ -4042,15 +4178,74 @@
 
 
 
-贰伍.可调用对象的绑定器和包装器(025BinderAndPackaging)
 
-    可调用对象
-    包装器function
-    绑定器bind
-    可变函数和参数的实现
-    回调函数的实现
-    如何取代虚函数
 
+
+
+贰伍.可调用对象的绑定器和包装器(025WrappersAndBinders)
+
+    cpp11新增了很多东西，其中只有三个东西可以称为神器：
+        智能指针，移动语义，还有就是可调用对象的包装器和绑定器
+    包装器: std::function
+    绑定器: std::bind
+    极具价值的应用场景：
+        可变函数和参数，回调函数，取代虚函数
+
+    可调用对象(callable_objects)
+        在C++中，可以像函数一样调用的有：普通函数、类的静态成员函数、仿函数、lambda函数、类的非静态成员函数、可被转换为函数的类的对象，统称可调用对象或函数对象。
+        可调用对象有类型，可以用指针存储它们的地址，可以被引用（类的成员函数除外）
+        普通函数
+            普通函数类型可以声明函数、定义函数指针和函数引用，但是，不能定义函数的实体。
+            函数指针经常使用，很少用函数应用，但是应用的本质就是指针，所以函数指针和函数应用是同一个东西
+        类的静态成员函数
+            类的静态成员函数和普通函数本质上是一样的，把普通函数放在类中而已。
+        仿函数
+            仿函数的本质是类，调用的代码像函数。
+            仿函数的类型就是类的类型。
+        lambda函数
+            lambda函数的本质是仿函数，仿函数的本质是类。
+        类的非静态成员函数
+            cpp有六种可调用对象，只有类的普通成员函数与众不同，正因为它的不同所以才需要可调用对象的包装器和绑定器。
+            类的非静态成员函数有地址，但是，只能通过类的对象才能调用它，所以，C++对它做了特别处理。
+            类的非静态成员函数只有指针类型，没有引用类型，不能引用。
+        可被转换为函数指针的类对象
+            类可以重载类型转换运算符operator 数据类型() ，如果数据类型是函数指针或函数引用类型，那么该类实例也将成为可调用对象。
+            它的本质是类，调用的代码像函数。
+            在实际开发中，没有任何意义，这种调用方式完全就是多此一举，不会被用到的。
+        
+    包装器function(wrapper_function)
+        std::function模板类是一个通用的可调用对象的包装器，用简单的、统一的方式处理可调用对象。
+            template<class _Fty>
+            class function……
+        _Fty是可调用对象的类型，格式：返回类型(参数列表)。
+        包含头文件：#include <functional>
+        注意：
+            重载了bool运算符，用于判断是否包装了可调用对象。
+            如果std::function对象未包装可调用对象，使用std::function对象将抛出std::bad_function_call异常。
+
+    适配器bind(binder_bind)
+        std::bind()模板函数是一个通用的函数适配器（绑定器），它用一个可调用对象及其参数，生成一个新的可调用对象，以适应模板。
+        包含头文件：#include <functional>
+        函数原型：
+            template< class Fx, class... Args >
+            function<> bind (Fx&& fx, Args&...args);
+                Fx：需要绑定的可调用对象（可以是前两节课介绍的那六种，也可以是function对象）。
+                args：绑定参数列表，可以是左值、右值和参数占位符std::placeholders::_n，如果参数不是占位符，缺省为值传递，std:: ref(参数)则为引用传递。
+        std::bind()返回std::function的对象。
+        std::bind()的本质是仿函数。
+
+    可变函数和参数的实现(implementing_variadic_functions)
+        写一个函数，函数的参数是函数对象及参数，功能和thread类的构造函数相同。
+
+    回调函数的实现(callback_function_implementation)
+
+        TODO
+        TODO
+        TODO
+
+
+    取代虚函数(alternatives_to_virtual_functions)
+        
 
 
 

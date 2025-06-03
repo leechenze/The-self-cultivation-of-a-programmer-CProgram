@@ -8,8 +8,13 @@ add_executable(024Cpp11Thread
         create_thread.cpp
         reclaiming_thread_resource.cpp
         this_thread_global_function.cpp
-
-
-
+        call_once_function.cpp
+        native_handle_function.cpp
+        thread_safe.cpp
+        thread_synchronization.cpp
+        thread_synchronization_mutex.cpp
+        thread_synchronization_conditional_variable.cpp
+        thread_synchronization_producer_consumer.cpp
+        atomic_type.cpp
 
         )
