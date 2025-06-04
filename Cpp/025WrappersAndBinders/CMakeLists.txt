@@ -10,7 +10,7 @@ add_executable(025WrappersAndBinders
         binder_bind.cpp
         implementing_variadic_functions.cpp
         callback_function_implementation.cpp
-
+        alternatives_to_virtual_functions.cpp
 
 
 
