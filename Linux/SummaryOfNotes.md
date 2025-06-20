@@ -446,7 +446,7 @@ VNWare快照功能使用(snapshot)
                 用于显示文件系统磁盘空间的总容量、已用空间和可用空间
             选项:
                 -h	        以人类可读的格式显示（自动换算成 KB/MB/GB）
-                -H	        类似 -h，但使用1000进制（千进制）单位
+                -H	        类似 -h, 但使用1000进制（千进制）单位
                 -k	        以 KB 为单位显示（默认单位）
                 -m	        以 MB 为单位显示
                 -T	        显示文件系统类型（ext4、tmpfs 等）
@@ -468,9 +468,11 @@ VNWare快照功能使用(snapshot)
             说明:
                 实时显示系统运行状态
             选项:
+                -i          只显示运行的进程, 不限时闲置或无用的进程
                 -b	        批处理模式(非内部交互操作), 适合输出到文件或脚本使用
                 -n <次数>	 指定刷新次数后退出（配合 -b 使用）
                 -u <用户>	 仅显示指定用户的进程
+                -c          显示产生进程的完整命令,补全COMMAND列.
                 -p <PID>	仅显示指定 PID 的进程
                 -d <秒>	    指定刷新间隔时间（秒）
                 -H	        显示线程（Thread）
@@ -581,13 +583,27 @@ VNWare快照功能使用(snapshot)
                 kill -l	                            ==>         显示所有支持的信号列表	用于参考信号名称与编号
         ping
             说明:
-                测试网络连通性
+                测试网络连通性, 走的是系统的名字解析服务（nsswitch.conf 配置）, 所以根据默认配置, ping会优先读 /etc/hosts, 没有时才会读公共DNS的配置.
             选项:
                 -c  发送次数
                 -i  间隔秒数
                 -W  超时时间
             示例:
                 ping -c 4 -W 2 google.com           ==>         测试google网络是否联通
+        host
+            说明:
+                查询 DNS（域名系统）记录的工具, 直接向 DNS 服务器请求查询, 不理会 /etc/hosts 本地静态映射文件中的配置.
+            选项:
+                -t TYPE	        查询指定类型的 DNS 记录, 如 A, MX, NS, TXT 等
+                -a	            查询所有类型的记录（等同于 -t any）
+                -v	            显示详细输出（verbose）
+                -l	            列出域名的所有主机（zone transfer, 需要授权）
+                -C	            检查 DNS 配置情况
+                -W SECS	        等待响应时间, 默认 5 秒
+            示例:
+                host example.com            ==>         查询域名对应的 IP 地址（正向解析）
+                host 8.8.8.8                ==>         查询 IP 地址对应的域名（反向解析）
+                host example.com 8.8.8.8    ==>         查询域名对应的 IP 地址（使用指定的DNS服务器8.8.8.8查询）
         ss
             说明:
                 网络连接统计工具(替代netstat的现代工具)
@@ -908,6 +924,9 @@ VNWare快照功能使用(snapshot)
         hostnamectl
             说明:
                 查看当前系统的详细信息,如:查看当前发行版的版本等等..
+            示例:
+                hostnamectl                                 ==>            查看当前系统的详细信息
+                hostnamectl set-hostname centos             ==>            设置主机名
 
 
     Linux命令符号:
@@ -1108,7 +1127,7 @@ VNWare快照功能使用(snapshot)
                     uid=1001(anglee) gid=1001(anglee) groups=1001(anglee),27(sudo)
                         当前用户是 anglee（UID 1001）
                         主组也是 anglee（GID 1001）
-                        该用户还属于 sudo 组（GID 27），意味着他可以使用 sudo 提权
+                        该用户还属于 sudo 组（GID 27）, 意味着他可以使用 sudo 提权
                     uid=1001(test) gid=1001(itcast) groups=1001(itcast)
                         当前用户是 test 1001）
                         主组是 itcast（GID 1001）
@@ -1136,6 +1155,17 @@ VNWare快照功能使用(snapshot)
             | **6. 最后修改时间**    | `Jun 6 13:12`   | 最后一次修改的时间                      |
             | **7. 文件名**         | `dev`           | 目录名（或文件名）                      |
 
+            文件类型:
+                -	普通文件（regular file）	文本、二进制、可执行等
+                d	目录（directory）	文件夹
+                l	软链接/符号链接（symbolic link）	类似 Windows 的快捷方式
+                b	块设备文件（block device）	硬盘、U 盘、光驱等设备
+                c	字符设备文件（character device）	键盘、串口等字符方式通信设备
+                p	管道（pipe / FIFO）	进程间通信的一种方式
+                s	套接字（socket）	进程间通信（网络/本地）
+                D	门（door, 仅 Solaris 使用）	现代 Linux 很少见
+                n	网络设备（rare）	罕见, 部分嵌入式系统或特定 FS 中可能出现
+            
             这段输出解读:
                 rwx权限是对于root用户名的
                 r-x权限是对于root用户组的
@@ -1237,12 +1267,444 @@ VNWare快照功能使用(snapshot)
 
 
     软链接
+        在系统中创建软链接,可以将文件,文件夹链接到其他位置, 类似于windows系统中的快捷方式
+        命令:
+            ln
+        选项:
+            -s	创建符号（软）链接
+            -f	强制覆盖目标文件
+            -v	显示创建过程（verbose）
+            -n	处理软链接时, 不跟随它指向的文件
+            -T	把目标强制当成普通文件（防止目标是目录）
+        示例:
+            ln -s /etc/nginx/nginx.conf ~/nginx.conf            ==>         创建软链接, 原文件是 /etc/nginx/nginx.conf, 软链接是 ~/nginx.conf.
+
+    
+    日期和时区
+        命令:
+            date [选项] [+格式]
+        选项:
+            -d STRING	            使用指定的日期时间字符串（不改变系统时间）
+                STRING可以为绝对时间:
+                    date -d "2025-06-20 14:30:00"
+                STRING可以为相对时间表达式:
+                    | 关键字             | 示例              | 含义说明         |
+                    | --------------- | --------------- | ------------ |
+                    | `yesterday`     | `"yesterday"`   | 昨天           |
+                    | `tomorrow`      | `"tomorrow"`    | 明天           |
+                    | `now`           | `"now"`         | 当前时间         |
+                    | `ago`           | `"3 days ago"`  | 几天前          |
+                    | `next` / `last` | `"next Friday"` | 下/上 星期几、月、年等 |
+                    | `+N unit`       | `"+3 days"`     | 未来 N 单位时间    |
+                    | `-N unit`       | `"-2 hours"`    | 过去 N 单位时间    |
+                    支持的时间单位:
+                        seconds, minutes, hours
+                        days, weeks, months, years
+                        Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday
+                    比如:
+                        date -d "yesterday"
+                        date -d "2 days ago"
+                        date -d "next Friday"
+                        date -d "last month"
+                        date -d "3 hours ago"
+                        date -d "+2 weeks"
+                STRING可以为时间戳:
+                    date -d @1700000000
+            -s STRING	            设置系统时间（需要 root 权限）
+                STRING的场景和-d相同, 除了时间戳外, 即-s的STRING不可以为时间戳,其余和-d的STRING一样.
+            -u	                    以 UTC（协调世界时）显示时间
+            -R	                    输出符合 RFC 5322 格式的日期（用于邮件头）
+            --rfc-3339=TYPE	        输出符合 RFC 3339 标准的时间格式（常用于日志）
+            --date=STRING	        与 -d 相同, 用于指定解析时间字符串
+            --set=STRING	        与 -s 相同, 用于设置系统时间
+            --utc 或 --universal	与 -u 相同, 显示 UTC 时间
+            -I	                    使用 ISO 8601 标准输出时间, 如 2025-06-20（默认只输出日期）
+            -I[=type]	            精确控制输出格式: date, hours, minutes, seconds, ns 等
+            --help	                显示帮助信息
+            --version	            显示版本信息
+        自定义格式控制符:
+            | 控制符  | 含义               | 示例值        |
+            | ---- | ---------------- | ---------- |
+            | `%Y` | 年（4位）            | 2025       |
+            | `%y` | 年（后两位）           | 25         |
+            | `%m` | 月（01-12）         | 06         |
+            | `%d` | 日（01-31）         | 20         |
+            | `%H` | 时（00-23）         | 14         |
+            | `%M` | 分（00-59）         | 30         |
+            | `%S` | 秒（00-59）         | 45         |
+            | `%a` | 星期（缩写）           | Thu        |
+            | `%A` | 星期（全称）           | Thursday   |
+            | `%u` | 一周中的第几天（1-7）     | 4          |
+            | `%j` | 一年中的第几天（001-366） | 171        |
+            | `%Z` | 时区               | CST        |
+            | `%s` | 自 Unix 纪元起(1970-01-01 00:00:00)的秒数    | 1750000000 |
+        示例:
+            date                                ==>         查看当前日期
+            date "+%Y-%m-%d %H:%M:%S"           ==>         获取指定格式的时间
+            date -d "yesterday" "+%Y-%m-%d"     ==>         获取指定日期的时间
+            date +%s                            ==>         获取当前时间戳
+            date -d @1750000000                 ==>         转换时间戳为可读的时间
+        修改系统时区:
+            通过符号链接修改 /etc/localtime:
+                rm -f /etc/localtime
+                sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+            通过命令修改
+                命令格式:
+                    timedatectl [子命令] [选项]
+                常用功能:
+                    | 功能                    | 命令                                            | 说明                   |
+                    | --------------------- | --------------------------------------------- | -------------------- |
+                    | 查看当前时间和状态             | `timedatectl`                                 | 显示本地时间、UTC、时区、NTP状态等 |
+                    | 设置系统时区                | `sudo timedatectl set-timezone Asia/Shanghai` | 设置为北京时间（东八区）         |
+                    | 列出所有支持的时区             | `timedatectl list-timezones`                  | 显示可选的时区列表            |
+                    | 启用 NTP 同步             | `sudo timedatectl set-ntp true`               | 启用自动时间同步             |
+                    | 禁用 NTP 同步             | `sudo timedatectl set-ntp false`              | 关闭自动时间同步             |
+                    | 设置本地时间（需配合 `date -s`） | `sudo date -s "2025-06-21 15:00:00"`          | 手动设定系统时间             |
+        使用ntp/ntpd/chrony/chronyc同步系统时间:
+            注意:
+                ntpd 是老旧的守护进程, 现在在新版 RHEL/CentOS 中不再维护。
+                chronyd 是更快、更适合虚拟机和不连续联网系统的 NTP 客户端, 推荐使用。
+            安装chrony
+                sudo dnf install -y chrony
+            启动 chrony 服务并设置开机启动
+                sudo systemctl enable --now chronyd
+            查看同步状态
+                chronyc tracking
+                    输出中的 Leap status, Stratum, Last offset 等字段表示是否同步成功。
+            检查当前同步的时间服务器
+                chronyc sources
+
+
+    IP地址和主机名
+        每一台电脑都会有一个IP地址, 用于和其他计算机进行通讯.
+        IP地址分为两个版本分别是IPv4,IPv6, 一般索说的IP都指的是IPv4.
+        IPv4地址的格式为: a.b.c.d, 其中abcd都表示0~255的数字.
+        可以通过ifconfig查看本机IP地址, 使用ifconfig首先需安装net-tools工具.
+            ifconfig输出字段解读:
+                lo	        回环接口	loopback, 本地回环设备, IP 一般是 127.0.0.1, 用于本机通信（系统内部）
+                ensX	    有线网卡	“Ethernet Naming Standard”, 新版 Linux 的命名规范, 例如 ens33 表示网口
+                ethX	    旧式有线网卡	旧版 Linux 中常见, 如 eth0, 新版已逐步改用 ensX 命名
+                wlanX	    无线网卡	无线网络设备, 如 wlan0（Wi-Fi 接口）
+                enpXsY	    PCI路径网卡	更详细的 predictable 命名方式, 如 enp0s3, 表示 PCI 总线位置的接口
+                virbrX	    虚拟桥接设备	一般由 libvirt 或虚拟机（如 KVM/QEMU）创建的虚拟网络桥接
+                brX	        网络桥设备	桥接网络接口, 如 Docker 或虚拟机使用桥接模式会创建
+                vnetX	    虚拟网卡设备	虚拟机使用的虚拟网络接口（QEMU/KVM 下常见）
+                dockerX	    Docker 虚拟接口	Docker 创建的容器网络虚拟网桥接口, 如 docker0
+                tunX	    TUN 设备	VPN 使用的虚拟点对点接口, 例如 OpenVPN、WireGuard
+                tapX	    TAP 设备	虚拟网桥使用的 TAP 接口
+                bondX	    聚合网卡	多个物理网卡聚合为一, 如服务器双网卡聚合成 bond0
+                teamX	    类似 bond	用于网卡聚合的另一种机制, 常用于冗余或负载均衡
+        特殊IP地址:
+            127.0.0.1           表示本机地址
+            0.0.0.0             1.指代本机, 2.在端口绑定中用来确定绑定关系, 3.在一些IP地址限制中用来表示好所有IP,相当于*通配符.
+        域名解析:
+            域名解析流程如下:
+                访问www.baidu.com, linux检查 /etc/hosts 本地静态映射文件 是否有 baidu.com 的ip地址匹配记录
+                如果有, 这直接打开记录对应的IP地址.
+                如果没有就会联网访问公开的DNS服务器中是否有记录, 市面上有很多免费公开使用的DNS服务器,比如说 114.114.114.114 或 8.8.8.8 等...
+                这些DNS服务器所提供的服务就是: 把域名给到DNS服务器, DNS会返回域名对应IP供访问.
+            可玩性:
+                既然域名解析的第一步是要访问本地静态映射文件. 那么就可以在linux中的 /etc/hosts 配置ipv4为自定义名(主机名),
+                然后通过 [用户名@主机名] 代替 [用户名@ipv4地址] 进行电脑的远程连接和访问通讯了.
+        配置Linux的固定IP地址
+            CentOS7
+                编辑网卡配置文件
+                    sudo vim /etc/sysconfig/network-scripts/ifcfg-ens33
+                内容示例即解释
+                    TYPE=Ethernet
+                    BOOTPROTO=dhcp                  改为 BOOTPROTO=static
+                    NAME=ens33
+                    DEVICE=ens33
+                    ONBOOT=yes
+                    IPADDR=192.168.1.100            IP地址
+                    NETMASK=255.255.255.0           子网掩码固定
+                    GATEWAY=192.168.1.1             网关
+                    DNS1=8.8.8.8                    DNS1设置为网关即可
+                然后重启网络服务
+                    sudo systemctl restart network
+            CentOS9
+                默认的网络配置方式是通过 NetworkManager 管理网络接口, 推荐使用 nmcli 命令行工具 或 编辑 keyfile 配置文件 来配置固定 IP.
+
+    
+    网络请求和下载
+        可以通过ping命令,检查指定网络服务器是否可联通状态
+        wget是非交互式的文件下载器,用于下载网络文件和资源
+        curl用于发送http网络请求,可用于下载文件,获取信息等...
+
+
+    端口
+        端口是设备与外界通讯交流的出入口, 可以分为 物理端口 和 虚拟端口
+        物理端口又称之为接口, 是可见端口, 如USB接口, RJ45网口, HDMI端口等等.
+        虚拟端口是计算机内部的端口, 是虚拟的不可见的, 是操作系统和外部进行交互使用的.
+        计算机之间的通讯, 是通过IP锁定某个具体的计算机, 但无法锁定具体的程序.
+        计算机程序之间的通讯, 就是通过端口实现的, 具体来说是IP + 端口
+        最大端口号到 65535, 端口可以分为三类进行使用:
+            公认端口: 0 ~ 1023, 通常用于一些系统内置或知名程序的预留使用, 如ssh的22端口, https的443端口, 非特殊需要, 不要占用这个范围的端口.
+                常见的知名程序的端口号:
+                    | 端口号   | 协议      | 服务/程序名称       | 说明                    |
+                    | ----- | ------- | ------------- | --------------------- |
+                    | 22    | TCP     | SSH           | 远程登录、文件传输（scp/sftp）   |
+                    | 80    | TCP     | HTTP          | 超文本传输协议, 网页访问          |
+                    | 443   | TCP     | HTTPS         | HTTP 的安全版本, SSL/TLS 加密 |
+                    | 21    | TCP     | FTP           | 文件传输协议                |
+                    | 25    | TCP     | SMTP          | 邮件发送协议                |
+                    | 110   | TCP     | POP3          | 邮件接收协议                |
+                    | 143   | TCP     | IMAP          | 邮件接收协议（支持服务器同步）       |
+                    | 53    | UDP/TCP | DNS           | 域名解析                  |
+                    | 3306  | TCP     | MySQL         | MySQL 数据库服务端口         |
+                    | 5432  | TCP     | PostgreSQL    | PostgreSQL 数据库服务端口    |
+                    | 6379  | TCP     | Redis         | Redis 内存数据库           |
+                    | 27017 | TCP     | MongoDB       | MongoDB 数据库           |
+                    | 8080  | TCP     | HTTP 代理端口  | 常用于开发环境、代理服务器         |
+                    | 3389  | TCP     | RDP           | Windows 远程桌面          |
+                    | 5900  | TCP     | VNC           | 远程桌面协议                |
+                    | 123   | UDP     | NTP           | 网络时间协议                |
+                    | 139   | TCP     | SMB/CIFS      | Windows 文件共享（NetBIOS） |
+                    | 445   | TCP     | SMB           | Windows 文件共享          |
+                    | 69    | UDP     | TFTP          | 简单文件传输协议              |
+                    | 11211 | TCP/UDP | Memcached     | 分布式缓存                 |
+                    | 9200  | TCP     | Elasticsearch | Elasticsearch HTTP 接口 |
+            注册端口: 1024 ~ 49151, 通常可以随意使用, 用于松散的绑定一些程序和服务
+            动态端口: 49152 ~ 65535, 通常不会固定绑定程序, 而是当程序对于进行网络通讯时临时使用
+        查看当前系统端口占用情况:
+            安装
+                sudo dnf install -y nmap
+            使用
+                nmap 127.0.0.1
+        查看指定端口的占用情况
+            使用netstat
+                安装
+                    sudo dnf install -y net-tools
+                使用
+                    netstat -anp | grep 端口号
+            使用ss(推荐)
+                安装: 现在默认大多数linux系统都支持 iproute2 套件, ss 就是 iproute2 套件中的一个工具.
+                使用
+                    ss -anp | grep 端口号
+
+
+    进程管理
+        计算机中的每个程序的运行都会被系统注册为一个进程, 并为每个进程非配一个进程ID, 即进程号
+        根据程序名关闭程序
+            得到程序进程运行信息,主要是PID
+                ps -ef | grep 程序名称
+            关闭程序
+                kill 程序PID
+            或者强制关闭
+                kill -9 程序PID
+        根据端口号关闭程序
+            得到程序进程运行信息,主要是PID
+                lsof -i :端口号
+            关闭程序
+                kill 程序PID
+            或者强制关闭
+                kill -9 程序PID
+
+
+    主机状态监控
+        系统资源监控
+            通过top命令查看CPU, 内存使用情况, 类似于mac的 activity monitor 和 windows的任务管理器
+            top命令详解
+                选项:
+                    -i          只显示运行的进程, 不限时闲置或无用的进程
+                    -b	        批处理模式(非内部交互操作), 适合输出到文件或脚本使用
+                    -n <次数>	 指定刷新次数后退出（配合 -b 使用）
+                    -u <用户>	 仅显示指定用户的进程
+                    -c          显示产生进程的完整命令,补全COMMAND列.
+                    -p <PID>	仅显示指定 PID 的进程
+                    -d <秒>	    指定刷新间隔时间（秒）
+                    -H	        显示线程（Thread）
+                示例:
+                    top	                                ==>         直接启动实时监控
+                    top -u root	                        ==>         仅显示 root 用户的进程
+                    top -p 1234	                        ==>         仅查看 PID 为 1234 的进程
+                    top -b -n 1 > top.txt	            ==>         批处理方式刷新一次, 并输出到文件
+                    top -b -d 5 -n 3	                ==>         每 5 秒刷新一次, 共刷新 3 次（适合写脚本分析）
+                    top -H	                            ==>         显示所有线程的资源使用情况
+            输出解读:
+                系统整体信息:
+                    top - 14:33:50 up 10 days,  2:01,  3 users,  load average: 0.12, 0.25, 0.32
+                        | 字段           | 含义                                              |
+                        | ------------ | ----------------------------------------------- |
+                        | 时间           | 当前系统时间                                          |
+                        | up           | 系统已运行时间                                         |
+                        | users        | 当前登录的用户数                                        |
+                        | load average | 系统负载（1分钟、5分钟、15分钟平均）<br>**0.00–1.00 表示轻松, 越高越忙** |
+                    Tasks: 224 total,   1 running, 223 sleeping,   0 stopped,   0 zombie
+                        | 字段       | 含义         |
+                        | -------- | ---------- |
+                        | total    | 总进程数       |
+                        | running  | 正在运行的进程数   |
+                        | sleeping | 休眠（等待）的进程数 |
+                        | stopped  | 停止的进程数     |
+                        | zombie   | 僵尸进程数      |
+                    %Cpu(s):  3.3 us,  1.0 sy,  0.0 ni, 95.3 id,  0.3 wa,  0.0 hi,  0.0 si,  0.0 st
+                        | 字段 | 含义                     |
+                        | -- | ---------------------- |
+                        | us | 用户态 CPU 使用率            |
+                        | sy | 内核态（系统）CPU 使用率         |
+                        | ni | 用户进程空间内改变过优先级的进程占用 CPU |
+                        | id | 空闲 CPU 时间              |
+                        | wa | 等待 I/O（磁盘/网络等）         |
+                        | hi | 硬中断占用 CPU              |
+                        | si | 软中断占用 CPU              |
+                        | st | 被虚拟机窃取的时间（steal）       |
+                    MiB Mem :   7896.3 total,   1523.2 free,   4021.7 used,   2351.4 buff/cache
+                        | 字段         | 含义                   |
+                        | ---------- | -------------------- |
+                        | total      | 总物理内存                |
+                        | free       | 空闲物理内存               |
+                        | used       | 已使用（不包括缓存和 buffer）   |
+                        | buff/cache | 缓存和缓冲区（Linux 内存管理特性） |
+                    MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   3610.2 avail Mem
+                        | 字段        | 含义             |
+                        | --------- | -------------- |
+                        | total     | 总交换空间(虚拟内存)  |
+                        | free      | 空闲交换空间         |
+                        | used      | 已使用的交换空间       |
+                        | avail Mem | 真实可用内存（包含缓存部分） |
+                进程列表
+                    | 字段      | 含义                             |
+                    | ------- | ------------------------------ |
+                    | PID     | 进程 ID                          |
+                    | USER    | 所属用户                           |
+                    | PR      | 进程优先级（priority,越小优先级越高）      |
+                    | NI      | nice 值（影响优先级, 越小优先级越高）          | 
+                    | VIRT    | 虚拟内存使用总量（包括 swap、共享库等）         |
+                    | RES     | 实际物理内存占用（常驻内存）                 |
+                    | SHR     | 共享内存（和其他进程共享的部分）               |
+                    | S       | 进程状态（R=运行, S=睡眠, Z=僵尸, T=停止, I=空闲） |
+                    | %CPU    | 占用 CPU 百分比                     |
+                    | %MEM    | 占用物理内存百分比                      |
+                    | TIME+   | 累计使用的 CPU 时间                   |
+                    | COMMAND | 启动该进程的命令名称                     |
+                操作
+                    q	退出 top
+                    h	显示帮助信息
+                    1	显示每个 CPU 的使用率
+                    M	按内存使用排序
+                    P	按 CPU 使用排序
+                    T	按累计运行时间排序
+                    k	杀进程（输入 PID 后按提示操作）
+                    r	renice（修改进程优先级）
+                    u	输入用户名, 仅显示该用户的进程
+                    f	自定义显示字段
+                        space       选中列/取消选中列
+                        up          上移
+                        down        下移
+                        q/esc       退出
+                    e   切换进程内存显示单位
+                    i   显示/隐藏闲置和无用进程,等同于 -i 参数
+                    l   显示/隐藏平均负载和启动时间信息.
+                    t   显示/隐藏cpu状态信息
+                    m   显示隐藏内存信息
+        磁盘监控
+            使用df命令,查看硬盘的使用情况
+                选项:
+                    -h	        以人类可读的格式显示（自动换算成 KB/MB/GB）
+                    -H	        类似 -h, 但使用1000进制（千进制）单位
+                    -k	        以 KB 为单位显示（默认单位）
+                    -m	        以 MB 为单位显示
+                    -T	        显示文件系统类型（ext4、tmpfs 等）
+                    -i	        显示 inode 使用情况（文件节点数量）
+                    --total	    显示所有文件系统的汇总
+                    -t <类型>	 只显示指定类型的文件系统
+                    -x <类型>	 排除指定类型的文件系统
+                示例:
+                    df -h                   ==>         查看系统的空间
+                    df -h /home             ==>         查看 home 目录所在文件系统的空间
+                输出字段解读:
+                    Filesystem	    文件系统的设备名或挂载点（分区名称）
+                    Size	        文件系统的总容量    
+                    Used	        已用空间
+                    Avail	        剩余可用空间
+                    Use%	        已用空间百分比
+                    Mounted on	    文件系统挂载点（挂载目录）
+            使用iostat查看cpu,磁盘的具体使用指标
+                iostat -x n1 n2
+                    -x 表示显示更多信息
+                    n1 表示刷新间隔
+                    n1 表示刷新几次
+        网络监控
+            使用sar命令查看网络的统计信息, sar是非常强大的工具, 这里只解释 -n 选项用途
+                sar -n DEV n1 n2
+                    -n 表示查看网络 DEV 表示查看网络接口
+                    n1 表示刷新间隔(缺省时查看一次就结束)
+                    n2 表示查看次数(缺省时表示无限次数)
+                输出字段解读:
+                    | 字段         | 含义                                                    |
+                    | ---------- | ----------------------------------------------------- |
+                    | `IFACE`    | 接口名称（如 `eth0`, `lo`, `ens33` 等）                       |
+                    | `rxpck/s`  | 每秒接收的 **网络包（packet）数**（Receive packets per second）    |
+                    | `txpck/s`  | 每秒发送的 **网络包数**（Transmit packets per second）           |
+                    | `rxkB/s`   | 每秒接收的 **数据量（KB）**（Receive kilobytes per second）       |
+                    | `txkB/s`   | 每秒发送的 **数据量（KB）**（Transmit kilobytes per second）      |
+                    | `rxcmp/s`  | 每秒接收的 **压缩数据包数**（Rare, Receive Compressed packets）     |
+                    | `txcmp/s`  | 每秒发送的 **压缩数据包数**（Transmit Compressed packets）         |
+                    | `rxmcst/s` | 每秒接收的 **多播数据包数**（Multicast packets per second）        |
+                    | `%ifutil`  | 接口利用率（Interface utilization）<br>≈(rxkB/s + txkB/s)/带宽 |
+
+
+    环境变量
+        执行env命令可查看当前系统中记录的环境变量, 其是一种 key=value 型结构
+        无论在任何时候都能正确执行 cd 等系统命令, 就是环境变量中 PATH 这个项目的值的作用.
+        查看详细PATH的记录值:
+            env | grep PATH
+        输出:
+            PATH=/home/anglee/.local/bin:/home/anglee/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
+        解释:
+            PATH是由多个:进行将多个值分割的, 当执行 cd 系统命令时, 会在 : 分割的前后多个目录中搜索是否有 cd 可执行程序
+            直到搜索到 cd 这个可执行程序, 如果都没有结果将会输出 bash: xxx: command not found...
+        ${}
+            在Linux中 ${} 符号被用于取变量的值.
+            比如 ${PATH} 就可以得到 /home/anglee/.local/bin:/home/anglee/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
+            然后配合 echo 正确输出 $PATH 的值 echo ${PATH} 也可以直接 echo $PATH
+        环境变量设置
+            临时设置:
+                export 变量名=变量值
+                示例:
+                    export MYNAME=anglee
+                    即可在全局的当前会话下的当前用户通过 echo $MYNAME 得到 anglee
+            永久设置:
+                针对当前用户生效
+                    配置在 ~/.bashrc 或 ~/.bash_profile 系统文件中
+                    配置内容:
+                        export MYNAME=anglee
+                    重载配置:
+                        source ~/.bashrc
+                    保存后即可在全局的当前用户通过 echo $MYNAME 得到 anglee
+                针对所有用户生效
+                    配置在 /etc/profile 或 /etc/environment 系统文件中
+                    配置内容:
+                        export MYNAME=anglee
+                    重载配置:
+                        ssource /etc/profile
+                    保存后即可在全局的所有用户通过 echo $MYNAME 得到 anglee
+                注意最后需要通过 source /etc/profile 或 source ~/.bashrc, 即重载配置文件立即生效, 
+        自定义一个环境变量
+            切换root用户, 在当前HOME目录内创建文件夹, myenv, 在文件夹内创建文件mkhaha
+            通过vim编辑器, 在mkhaha文件内填入: echo "Hahahahaha".
+            当执行 sudo ./mkhaha 会得到 sudo: ./mkhaha: command not found
+            是因为 mkhaha 是不可执行的文件, 没有执行权限, 需要设定为执行权限的文件 chmod 755 mkhaha
+            再次 ./mkhaha 即可得到正确输出 Hahahahaha.
+            修改PATH的值
+                临时修改PATH:
+                    export PATH=$PATH:/home/itheima/myenv, 再次执行mkhaha, 无论在哪里都能执行了
+                永久修改PATH:
+                    export PATH=$PATH:/home/itheima/myenv, 填入用户环境变量文件或系统环境变量文件中.
+            此时在任意工作目录都可以正确执行 mkhaha 这个自定义命令.
+    
+
+    上传和下载
         TODO
 
-            
-            
-            
-            
+
+
+
+
+
+
+        
             
         
         
