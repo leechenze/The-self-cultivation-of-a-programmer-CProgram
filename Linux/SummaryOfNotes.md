@@ -245,6 +245,7 @@ VNWare快照功能使用(snapshot)
                 归档压缩工具
             选项:
                 -c  创建归档
+                -C  解压时指定解压的目的地
                 -x  解包归档
                 -v  显示过程
                 -t	显示归档列表
@@ -1696,16 +1697,53 @@ VNWare快照功能使用(snapshot)
     
 
     上传和下载
-        TODO
-
-
-
-
-
-
-
+        使用lrzsz工具包
+            安装上传和下载文件工具 lrzsz
+            sudo dnf install lrzsz
+            rz(文件上传/文件接收)和sz(文件下载/文件发送)属于 lrzsz 工具包的一部分, 是基于 ZModem 协议 的命令行文件传输工具
+            注意mac下需要使用finalshell工具才支持 ZModem 协议. 除此之外的大多数都不支持 zModem协议.
+            rz命令选项:
+                -y	自动覆盖本地已有文件（不提示）
+                -e	启动 rz 后自动退出
+                -b	使用二进制传输（binary），效率更高
+                -a	ASCII 模式传输，适用于文本文件
+                -E	传输出错时自动退出
+                -q	安静模式（不显示详细过程）
+                -t	安全模式（telnet/ssh 使用时自动打开）
+                -v	显示详细信息（verbose）
+            sz命令选项:
+                -y	自动覆盖本地已有文件
+                -e	传输完成后自动退出
+                -b	使用二进制方式发送
+                -a	ASCII 文本发送
+                -E	发生错误时退出
+                -q	静默模式
+                -v	显示详细过程
+                --escape	启用转义传输模式（防止传输中断）
+        使用scp命令
+            scp（Secure Copy Protocol）是基于 SSH 的远程文件拷贝命令, 用于在本地和远程之间, 或两个远程主机之间安全地复制文件或目录
+            命令格式:
+                scp [选项] 源路径 目标路径
+            命令选项:
+                -r	递归复制整个目录
+                -P	指定远程主机 SSH 端口（注意是大写 P）
+                -C	启用压缩传输，提高速度
+                -p	保留文件的原始修改时间、访问时间和权限
+                -v	显示详细信息（调试用）
+                -q	安静模式，禁止进度条显示
+                -i	指定私钥文件，用于密钥认证
+            命令示例:
+                scp ./photo.jpg anglee@192.168.1.10:/home/anglee/images/            ==>         将 photo.jpg 发送到远程服务器的指定目录中。
+                scp anglee@192.168.1.10:/home/anglee/report.txt ./                  ==>         从远程服务器下载 report.txt 到当前目录。
+                scp -r ./project anglee@192.168.1.10:/home/anglee/                  ==>         使用 -r 递归复制整个目录。
+                scp -r anglee@192.168.1.10:/home/anglee/logs ./backup/              ==>         下载整个目录
+                scp -P 2222 file.txt anglee@192.168.1.10:/home/anglee/              ==>         使用指定端口 2222 进行文件传输
+                scp file1 file2 file3 user@host:/path/                              ==>         复制文件到远程主机/path/目录
         
-            
+
+    压缩和解压
+        详见第一章节Linux常用命令的 tar, zip/unzip 命令详解.
+        
         
         
 零、壹、贰、叁、肆、伍、陆、柒、捌、玖、拾;
