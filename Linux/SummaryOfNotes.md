@@ -1743,7 +1743,19 @@ VNWare快照功能使用(snapshot)
 
     压缩和解压
         详见第一章节Linux常用命令的 tar, zip/unzip 命令详解.
+
+    
+    挂载和卸载挂载
+        安装nfs工具包
+            sudo apt install nfs-common -y
+        命令格式:
+            sudo mount [选项] 设备/远程目录 本地挂载点
+        命令示例:
+            sudo mount -t nfs 192.168.1.100:/home/wheeltec/wheeltec_robot /mnt      ==>         把远程主机（IP：192.168.1.100）的共享目录挂到本地 /mnt,实现文件共享(修改远程时,会同步修改本地,反之同理)
+            sudo umount /mnt                                                        ==>         卸载挂载
         
-        
-        
+
+
+
+
 零、壹、贰、叁、肆、伍、陆、柒、捌、玖、拾;
